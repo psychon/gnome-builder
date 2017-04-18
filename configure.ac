@@ -322,6 +322,7 @@ m4_include([plugins/notification/configure.ac])
 m4_include([plugins/phpize/configure.ac])
 m4_include([plugins/project-tree/configure.ac])
 m4_include([plugins/python-gi-imports-completion/configure.ac])
+m4_include([plugins/python-langserv/configure.ac])
 m4_include([plugins/python-pack/configure.ac])
 m4_include([plugins/quick-highlight/configure.ac])
 m4_include([plugins/retab/configure.ac])
@@ -611,6 +612,7 @@ echo "  Project Tree ......................... : ${enable_project_tree_plugin}"
 echo "  Python GObject Introspection ......... : ${enable_python_gi_imports_completion_plugin}"
 echo "  Python Jedi Autocompletion ........... : ${enable_jedi_plugin}"
 echo "  Python Language Pack ................. : ${enable_python_pack_plugin}"
+echo "  Python Language Server ............... : ${enable_python_langserv_plugin}"
 echo "  Quick Highlight ...................... : ${enable_quick_highlight_plugin}"
 echo "  Retab................................. : ${enable_retab_plugin}"
 echo "  Rust Language Server ................. : ${enable_rust_langserv_plugin}"

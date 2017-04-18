@@ -33,6 +33,7 @@ SUBDIRS =                            \
 	phpize                       \
 	project-tree                 \
 	python-gi-imports-completion \
+	python-langserv              \
 	python-pack                  \
 	quick-highlight              \
 	retab                        \
