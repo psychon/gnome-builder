@@ -495,8 +495,6 @@ libide_1_0_la_SOURCES =                                                     \
 	gsettings/ide-language-defaults.h                                   \
 	history/ide-back-forward-list-private.h                             \
 	ide-internal.h                                                      \
-	keybindings/ide-keybindings.c                                       \
-	keybindings/ide-keybindings.h                                       \
 	modelines/ide-modelines-file-settings.c                             \
 	modelines/ide-modelines-file-settings.h                             \
 	modelines/modeline-parser.c                                         \
