@@ -29,7 +29,7 @@
 #include "application/ide-application-actions.h"
 #include "application/ide-application-credits.h"
 #include "application/ide-application-private.h"
-#include "keybindings/ide-shortcuts-window.h"
+#include "shortcuts/ide-shortcuts-window.h"
 #include "workbench/ide-workbench.h"
 #include "greeter/ide-greeter-perspective.h"
 #include "util/ide-flatpak.h"

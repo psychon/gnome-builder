@@ -82,7 +82,6 @@
     <file compressed="true" alias="ide-run-button.ui">../runner/ide-run-button.ui</file>
     <file compressed="true" alias="ide-transfer-row.ui">../transfers/ide-transfer-row.ui</file>
     <file compressed="true" alias="ide-transfers-button.ui">../transfers/ide-transfers-button.ui</file>
-    <file compressed="true" alias="ide-shortcuts-window.ui">../keybindings/ide-shortcuts-window.ui</file>
     <file compressed="true" alias="ide-workbench-header-bar.ui">../workbench/ide-workbench-header-bar.ui</file>
     <file compressed="true" alias="ide-workbench.ui">../workbench/ide-workbench.ui</file>
     <file compressed="true" alias="ide-workbench-message.ui">../workbench/ide-workbench-message.ui</file>
