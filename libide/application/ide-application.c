@@ -150,7 +150,9 @@ static void
 ide_application_register_keybindings (IdeApplication *self)
 {
   g_autoptr(GSettings) settings = NULL;
+  g_autofree gchar *user_dir = NULL;
   g_autofree gchar *name = NULL;
+  g_autoptr(GError) error = NULL;
 
   IDE_ENTRY;
 
@@ -158,8 +160,27 @@ ide_application_register_keybindings (IdeApplication *self)
 
   settings = g_settings_new ("org.gnome.builder.editor");
   name = g_settings_get_string (settings, "keybindings");
-  self->keybindings = ide_keybindings_new (GTK_APPLICATION (self), name);
-  g_settings_bind (settings, "keybindings", self->keybindings, "mode", G_SETTINGS_BIND_GET);
+
+  /*
+   * This is the directory where user overrides will be written to.  It needs
+   * to be writiable by the user and should also contain any user installed
+   * keybindings.
+   */
+  user_dir = g_build_filename (g_get_user_data_dir (),
+                               ide_get_program_name (),
+                               "keybindings",
+                               NULL);
+
+  self->shortcut_manager = g_object_ref (ide_shortcut_manager_get_default ());
+  ide_shortcut_manager_set_user_dir (self->shortcut_manager, user_dir);
+  ide_shortcut_manager_prepend_search_path (self->shortcut_manager, user_dir);
+
+  if (!g_initable_init (G_INITABLE (self->shortcut_manager), NULL, &error))
+    g_warning ("%s", error->message);
+
+  g_settings_bind (settings, "keybindings",
+                   self->shortcut_manager, "theme-name",
+                   G_SETTINGS_BIND_GET);
 
   IDE_EXIT;
 }
@@ -501,7 +522,7 @@ ide_application_finalize (GObject *object)
   g_clear_pointer (&self->reapers, g_ptr_array_unref);
   g_clear_pointer (&self->plugin_gresources, g_hash_table_unref);
   g_clear_object (&self->worker_manager);
-  g_clear_object (&self->keybindings);
+  g_clear_object (&self->shortcut_manager);
   g_clear_object (&self->recent_projects);
   g_clear_object (&self->theme_manager);
   g_clear_object (&self->menu_manager);
@@ -738,7 +759,7 @@ ide_application_get_keybindings_mode (IdeApplication *self)
   g_return_val_if_fail (IDE_IS_APPLICATION (self), NULL);
 
   if (self->mode == IDE_APPLICATION_MODE_PRIMARY)
-    return ide_keybindings_get_mode (self->keybindings);
+    return ide_shortcut_manager_get_theme_name (self->shortcut_manager);
 
   return NULL;
 }
