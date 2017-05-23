@@ -796,9 +796,12 @@ ide_shortcut_manager_add_action (IdeShortcutManager *self,
   IdeShortcutNodeData *data;
   GNode *parent;
 
-  g_return_if_fail (IDE_IS_SHORTCUT_MANAGER (self));
+  g_return_if_fail (!self || IDE_IS_SHORTCUT_MANAGER (self));
   g_return_if_fail (detailed_action_name != NULL);
   g_return_if_fail (title != NULL);
+
+  if (self == NULL)
+    self = ide_shortcut_manager_get_default ();
 
   section = g_intern_string (section);
   group = g_intern_string (group);
@@ -831,9 +834,12 @@ ide_shortcut_manager_add_command (IdeShortcutManager *self,
   IdeShortcutNodeData *data;
   GNode *parent;
 
-  g_return_if_fail (IDE_IS_SHORTCUT_MANAGER (self));
+  g_return_if_fail (!self || IDE_IS_SHORTCUT_MANAGER (self));
   g_return_if_fail (command != NULL);
   g_return_if_fail (title != NULL);
+
+  if (self == NULL)
+    self = ide_shortcut_manager_get_default ();
 
   section = g_intern_string (section);
   group = g_intern_string (group);
