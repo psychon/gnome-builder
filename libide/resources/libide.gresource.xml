@@ -77,6 +77,8 @@
     <file compressed="true" alias="ide-preferences-perspective.ui">../preferences/ide-preferences-perspective.ui</file>
     <file compressed="true" alias="ide-preferences-spin-button.ui">../preferences/ide-preferences-spin-button.ui</file>
     <file compressed="true" alias="ide-preferences-switch.ui">../preferences/ide-preferences-switch.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="ide-shortcut-accel-dialog.ui">../shortcuts/ide-shortcut-accel-dialog.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="ide-shortcut-theme-editor.ui">../shortcuts/ide-shortcut-theme-editor.ui</file>
     <file compressed="true" alias="ide-run-button.ui">../runner/ide-run-button.ui</file>
     <file compressed="true" alias="ide-transfer-row.ui">../transfers/ide-transfer-row.ui</file>
     <file compressed="true" alias="ide-transfers-button.ui">../transfers/ide-transfers-button.ui</file>
@@ -110,5 +112,9 @@
     <file compressed="true" alias="ide-build-panel.ui">../buildui/ide-build-panel.ui</file>
     <file compressed="true" alias="ide-build-perspective.ui">../buildui/ide-build-perspective.ui</file>
     <file compressed="true" alias="ide-environment-editor-row.ui">../buildui/ide-environment-editor-row.ui</file>
+  </gresource>
+
+  <gresource prefix="/org/gnome/builder/icons">
+    <file compressed="true" preprocess="xml-stripblanks" alias="enter-keyboard-shortcut.svg">../shortcuts/enter-keyboard-shortcut.svg</file>
   </gresource>
 </gresources>

@@ -129,6 +129,19 @@ libide_1_0_la_public_headers =                                              \
 	search/ide-search-provider.h                                        \
 	search/ide-search-reducer.h                                         \
 	search/ide-search-result.h                                          \
+	shortcuts/ide-shortcut-accel-dialog.h                               \
+	shortcuts/ide-shortcut-chord.h                                      \
+	shortcuts/ide-shortcut-context.h                                    \
+	shortcuts/ide-shortcut-controller.h                                 \
+	shortcuts/ide-shortcut-label.h                                      \
+	shortcuts/ide-shortcut-manager.h                                    \
+	shortcuts/ide-shortcut-model.h                                      \
+	shortcuts/ide-shortcuts-group.h                                     \
+	shortcuts/ide-shortcuts-section.h                                   \
+	shortcuts/ide-shortcuts-shortcut.h                                  \
+	shortcuts/ide-shortcuts-window.h                                    \
+	shortcuts/ide-shortcut-theme-editor.h                               \
+	shortcuts/ide-shortcut-theme.h                                      \
 	snippets/ide-source-snippet-chunk.h                                 \
 	snippets/ide-source-snippet-context.h                               \
 	snippets/ide-source-snippet.h                                       \
@@ -317,6 +330,21 @@ libide_1_0_la_public_sources =                                              \
 	search/ide-search-engine.c                                          \
 	search/ide-search-provider.c                                        \
 	search/ide-search-result.c                                          \
+	shortcuts/ide-shortcut-accel-dialog.c                               \
+	shortcuts/ide-shortcut-chord.c                                      \
+	shortcuts/ide-shortcut-context.c                                    \
+	shortcuts/ide-shortcut-controller.c                                 \
+	shortcuts/ide-shortcut-label.c                                      \
+	shortcuts/ide-shortcut-manager.c                                    \
+	shortcuts/ide-shortcut-model.c                                      \
+	shortcuts/ide-shortcuts-group.c                                     \
+	shortcuts/ide-shortcuts-section.c                                   \
+	shortcuts/ide-shortcuts-shortcut.c                                  \
+	shortcuts/ide-shortcuts-window.c                                    \
+	shortcuts/ide-shortcut-theme.c                                      \
+	shortcuts/ide-shortcut-theme-editor.c                               \
+	shortcuts/ide-shortcut-theme-load.c                                 \
+	shortcuts/ide-shortcut-theme-save.c                                 \
 	snippets/ide-source-snippet-chunk.c                                 \
 	snippets/ide-source-snippet-context.c                               \
 	snippets/ide-source-snippet.c                                       \
@@ -469,8 +497,6 @@ libide_1_0_la_SOURCES =                                                     \
 	ide-internal.h                                                      \
 	keybindings/ide-keybindings.c                                       \
 	keybindings/ide-keybindings.h                                       \
-	keybindings/ide-shortcuts-window.c                                  \
-	keybindings/ide-shortcuts-window.h                                  \
 	modelines/ide-modelines-file-settings.c                             \
 	modelines/ide-modelines-file-settings.h                             \
 	modelines/modeline-parser.c                                         \
@@ -490,6 +516,9 @@ libide_1_0_la_SOURCES =                                                     \
 	preferences/ide-preferences-perspective.h                           \
 	runner/ide-run-manager-private.h                                    \
 	search/ide-search-reducer.c                                         \
+	shortcuts/ide-shortcuts-window-private.h                            \
+	shortcuts/ide-shortcuts-shortcut-private.h                          \
+	shortcuts/ide-shortcut-private.h                                    \
 	snippets/ide-source-snippet-completion-item.c                       \
 	snippets/ide-source-snippet-completion-item.h                       \
 	snippets/ide-source-snippet-completion-provider.c                   \
