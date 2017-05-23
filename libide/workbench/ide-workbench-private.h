@@ -21,6 +21,8 @@
 
 #include <libpeas/peas.h>
 
+#include "shortcuts/ide-shortcut-controller.h"
+#include "shortcuts/ide-shortcut-manager.h"
 #include "workbench/ide-perspective.h"
 #include "workbench/ide-perspective-menu-button.h"
 #include "workbench/ide-workbench.h"
@@ -37,6 +39,7 @@ struct _IdeWorkbench
   guint                      early_perspectives_removed : 1;
   guint                      did_initial_editor_transition : 1;
 
+  IdeShortcutController     *controller;
   IdeContext                *context;
   GCancellable              *cancellable;
   PeasExtensionSet          *addins;
