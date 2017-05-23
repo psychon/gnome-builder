@@ -166,13 +166,14 @@ ide_application_register_keybindings (IdeApplication *self)
    * to be writiable by the user and should also contain any user installed
    * keybindings.
    */
-  user_dir = g_build_filename (g_get_user_data_dir (),
-                               ide_get_program_name (),
-                               "keybindings",
-                               NULL);
+  user_dir = g_build_filename (g_get_user_data_dir (), PACKAGE, "keybindings", NULL);
 
   self->shortcut_manager = g_object_ref (ide_shortcut_manager_get_default ());
   ide_shortcut_manager_set_user_dir (self->shortcut_manager, user_dir);
+  ide_shortcut_manager_prepend_search_path (self->shortcut_manager,
+                                            "resource:///org/gnome/builder/keybindings");
+  ide_shortcut_manager_prepend_search_path (self->shortcut_manager,
+                                            PACKAGE_DATADIR G_DIR_SEPARATOR_S PACKAGE G_DIR_SEPARATOR_S "keybindings");
   ide_shortcut_manager_prepend_search_path (self->shortcut_manager, user_dir);
 
   if (!g_initable_init (G_INITABLE (self->shortcut_manager), NULL, &error))
