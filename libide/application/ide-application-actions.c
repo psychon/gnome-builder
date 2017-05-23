@@ -29,6 +29,7 @@
 #include "application/ide-application-actions.h"
 #include "application/ide-application-credits.h"
 #include "application/ide-application-private.h"
+#include "shortcuts/ide-shortcut-manager.h"
 #include "shortcuts/ide-shortcuts-window.h"
 #include "workbench/ide-workbench.h"
 #include "greeter/ide-greeter-perspective.h"
@@ -330,6 +331,8 @@ ide_application_actions_shortcuts (GSimpleAction *action,
                          "window-position", GTK_WIN_POS_CENTER,
                          "transient-for", parent,
                          NULL);
+
+  ide_shortcut_manager_add_shortcuts_to_window (NULL, IDE_SHORTCUTS_WINDOW (window));
 
   gtk_window_present (GTK_WINDOW (window));
 }
