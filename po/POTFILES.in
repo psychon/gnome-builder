@@ -78,7 +78,6 @@ libide/gsettings/ide-language-defaults.c
 libide/ide.c
 libide/ide-context.c
 libide/ide-object.c
-libide/keybindings/ide-shortcuts-window.ui
 libide/preferences/ide-preferences-builtin.c
 libide/preferences/ide-preferences-font-button.ui
 libide/preferences/ide-preferences-perspective.c
