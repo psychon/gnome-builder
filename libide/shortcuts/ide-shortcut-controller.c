@@ -663,10 +663,12 @@ ide_shortcut_controller_handle_event (IdeShortcutController *self,
 
   g_object_notify_by_pspec (G_OBJECT (self), properties [PROP_CURRENT_CHORD]);
 
+#if 0
   {
     g_autofree gchar *str = ide_shortcut_chord_to_string (priv->current_chord);
     g_debug ("Chord = %s", str);
   }
+#endif
 
   match = ide_shortcut_controller_process (self, priv->current_chord);
 
@@ -676,7 +678,9 @@ ide_shortcut_controller_handle_event (IdeShortcutController *self,
       g_object_notify_by_pspec (G_OBJECT (self), properties [PROP_CURRENT_CHORD]);
     }
 
+#if 0
   g_debug ("match = %d", match);
+#endif
 
   return (match ? GDK_EVENT_STOP : GDK_EVENT_PROPAGATE);
 }
