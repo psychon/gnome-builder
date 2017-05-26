@@ -30,6 +30,16 @@ G_BEGIN_DECLS
 
 G_DECLARE_DERIVABLE_TYPE (IdeShortcutManager, ide_shortcut_manager, IDE, SHORTCUT_MANAGER, GObject)
 
+typedef struct
+{
+  const gchar *command;
+  const gchar *section;
+  const gchar *group;
+  const gchar *title;
+  const gchar *subtitle;
+  /* TODO: Should we add a default accelerator to add to the default theme? */
+} IdeShortcutEntry;
+
 struct _IdeShortcutManagerClass
 {
   GObjectClass parent_instance;
@@ -45,40 +55,44 @@ struct _IdeShortcutManagerClass
 };
 
 IdeShortcutManager *ide_shortcut_manager_get_default             (void);
-void                ide_shortcut_manager_append_search_path      (IdeShortcutManager *self,
-                                                                  const gchar        *directory);
-void                ide_shortcut_manager_prepend_search_path     (IdeShortcutManager *self,
-                                                                  const gchar        *directory);
-IdeShortcutTheme   *ide_shortcut_manager_get_theme               (IdeShortcutManager *self);
-void                ide_shortcut_manager_set_theme               (IdeShortcutManager *self,
-                                                                  IdeShortcutTheme   *theme);
-const gchar        *ide_shortcut_manager_get_theme_name          (IdeShortcutManager *self);
-void                ide_shortcut_manager_set_theme_name          (IdeShortcutManager *self,
-                                                                  const gchar        *theme_name);
-gboolean            ide_shortcut_manager_handle_event            (IdeShortcutManager *self,
-                                                                  const GdkEventKey  *event,
-                                                                  GtkWidget          *toplevel);
-void                ide_shortcut_manager_add_theme               (IdeShortcutManager *self,
-                                                                  IdeShortcutTheme   *theme);
-void                ide_shortcut_manager_remove_theme            (IdeShortcutManager *self,
-                                                                  IdeShortcutTheme   *theme);
-const gchar        *ide_shortcut_manager_get_user_dir            (IdeShortcutManager *self);
-void                ide_shortcut_manager_set_user_dir            (IdeShortcutManager *self,
-                                                                  const gchar        *user_dir);
-void                ide_shortcut_manager_add_action              (IdeShortcutManager *self,
-                                                                  const gchar        *detailed_action_name,
-                                                                  const gchar        *section,
-                                                                  const gchar        *group,
-                                                                  const gchar        *title,
-                                                                  const gchar        *subtitle);
-void                ide_shortcut_manager_add_command             (IdeShortcutManager *self,
-                                                                  const gchar        *command,
-                                                                  const gchar        *section,
-                                                                  const gchar        *group,
-                                                                  const gchar        *title,
-                                                                  const gchar        *subtitle);
-void                ide_shortcut_manager_add_shortcuts_to_window (IdeShortcutManager *self,
-                                                                  IdeShortcutsWindow *window);
+void                ide_shortcut_manager_append_search_path      (IdeShortcutManager     *self,
+                                                                  const gchar            *directory);
+void                ide_shortcut_manager_prepend_search_path     (IdeShortcutManager     *self,
+                                                                  const gchar            *directory);
+IdeShortcutTheme   *ide_shortcut_manager_get_theme               (IdeShortcutManager     *self);
+void                ide_shortcut_manager_set_theme               (IdeShortcutManager     *self,
+                                                                  IdeShortcutTheme       *theme);
+const gchar        *ide_shortcut_manager_get_theme_name          (IdeShortcutManager     *self);
+void                ide_shortcut_manager_set_theme_name          (IdeShortcutManager     *self,
+                                                                  const gchar            *theme_name);
+gboolean            ide_shortcut_manager_handle_event            (IdeShortcutManager     *self,
+                                                                  const GdkEventKey      *event,
+                                                                  GtkWidget              *toplevel);
+void                ide_shortcut_manager_add_theme               (IdeShortcutManager     *self,
+                                                                  IdeShortcutTheme       *theme);
+void                ide_shortcut_manager_remove_theme            (IdeShortcutManager     *self,
+                                                                  IdeShortcutTheme       *theme);
+const gchar        *ide_shortcut_manager_get_user_dir            (IdeShortcutManager     *self);
+void                ide_shortcut_manager_set_user_dir            (IdeShortcutManager     *self,
+                                                                  const gchar            *user_dir);
+void                ide_shortcut_manager_add_action              (IdeShortcutManager     *self,
+                                                                  const gchar            *detailed_action_name,
+                                                                  const gchar            *section,
+                                                                  const gchar            *group,
+                                                                  const gchar            *title,
+                                                                  const gchar            *subtitle);
+void                ide_shortcut_manager_add_command             (IdeShortcutManager     *self,
+                                                                  const gchar            *command,
+                                                                  const gchar            *section,
+                                                                  const gchar            *group,
+                                                                  const gchar            *title,
+                                                                  const gchar            *subtitle);
+void                ide_shortcut_manager_add_shortcut_entries    (IdeShortcutManager     *self,
+                                                                  const IdeShortcutEntry *shortcuts,
+                                                                  guint                   n_shortcuts,
+                                                                  const gchar            *translation_domain);
+void                ide_shortcut_manager_add_shortcuts_to_window (IdeShortcutManager     *self,
+                                                                  IdeShortcutsWindow     *window);
 
 G_END_DECLS
 

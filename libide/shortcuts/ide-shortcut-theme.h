@@ -48,6 +48,9 @@ IdeShortcutTheme       *ide_shortcut_theme_new                   (const gchar   
 const gchar            *ide_shortcut_theme_get_name              (IdeShortcutTheme        *self);
 const gchar            *ide_shortcut_theme_get_title             (IdeShortcutTheme        *self);
 const gchar            *ide_shortcut_theme_get_subtitle          (IdeShortcutTheme        *self);
+const gchar            *ide_shortcut_theme_get_parent_name       (IdeShortcutTheme        *self);
+void                    ide_shortcut_theme_set_parent_name       (IdeShortcutTheme        *self,
+                                                                  const gchar             *parent_name);
 IdeShortcutContext     *ide_shortcut_theme_find_default_context  (IdeShortcutTheme        *self,
                                                                   GtkWidget               *widget);
 IdeShortcutContext     *ide_shortcut_theme_find_context_by_name  (IdeShortcutTheme        *self,

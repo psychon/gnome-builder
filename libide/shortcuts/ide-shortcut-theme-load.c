@@ -21,6 +21,7 @@
 #include <string.h>
 
 #include "ide-shortcut-context.h"
+#include "ide-shortcut-private.h"
 #include "ide-shortcut-theme.h"
 
 typedef enum
@@ -324,6 +325,8 @@ theme_start_element (GMarkupParseContext  *context,
 
   if (g_strcmp0 (element_name, "theme") == 0)
     {
+      const gchar *name = NULL;
+      const gchar *parent = NULL;
       const gchar *domain = NULL;
 
       if (state->stack != NULL)
@@ -336,12 +339,19 @@ theme_start_element (GMarkupParseContext  *context,
         }
 
       if (!g_markup_collect_attributes (element_name, attr_names, attr_values, error,
+                                        G_MARKUP_COLLECT_STRING, "name", &name,
+                                        G_MARKUP_COLLECT_STRING | G_MARKUP_COLLECT_OPTIONAL, "parent", &parent,
                                         G_MARKUP_COLLECT_STRING | G_MARKUP_COLLECT_OPTIONAL, "translation-domain", &domain,
                                         G_MARKUP_COLLECT_INVALID))
         return;
 
       if (domain != NULL)
         state->translation_domain = g_intern_string (domain);
+
+      _ide_shortcut_theme_set_name (state->self, name);
+
+      if (parent != NULL)
+        ide_shortcut_theme_set_parent_name (state->self, parent);
 
       load_state_push (state, load_state_frame_new (LOAD_STATE_THEME));
     }

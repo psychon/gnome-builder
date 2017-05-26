@@ -85,6 +85,8 @@ typedef enum
 GNode                 *_ide_shortcut_manager_get_root      (IdeShortcutManager         *self);
 GtkTreeModel          *_ide_shortcut_theme_create_model    (IdeShortcutTheme           *self);
 GHashTable            *_ide_shortcut_theme_get_contexts    (IdeShortcutTheme           *self);
+void                   _ide_shortcut_theme_set_name        (IdeShortcutTheme           *self,
+                                                            const gchar                *name);
 IdeShortcutChordTable *_ide_shortcut_context_get_table     (IdeShortcutContext         *self);
 void                   _ide_shortcut_chord_table_iter_init (IdeShortcutChordTableIter  *iter,
                                                             IdeShortcutChordTable      *table);

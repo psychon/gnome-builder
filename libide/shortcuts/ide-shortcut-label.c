@@ -160,32 +160,40 @@ void
 ide_shortcut_label_set_chord (IdeShortcutLabel       *self,
                               const IdeShortcutChord *chord)
 {
+  g_return_if_fail (IDE_IS_SHORTCUT_LABEL (self));
+
   if (!ide_shortcut_chord_equal (chord, self->chord))
     {
-      g_autofree gchar *accel = NULL;
-
       ide_shortcut_chord_free (self->chord);
       self->chord = ide_shortcut_chord_copy (chord);
 
-      if (self->chord != NULL)
-        accel = ide_shortcut_chord_to_string (self->chord);
+      gtk_container_foreach (GTK_CONTAINER (self), (GtkCallback) gtk_widget_destroy, NULL);
 
-      gtk_container_foreach (GTK_CONTAINER (self),
-                             (GtkCallback) gtk_widget_destroy,
-                             NULL);
-
-      if (accel != NULL)
+      if (chord != NULL)
         {
-          g_auto(GStrv) parts = NULL;
+          GdkModifierType first_mod = 0;
+          guint len;
 
-          parts = g_strsplit (accel, "|", 0);
+          len = ide_shortcut_chord_get_length (chord);
 
-          for (guint i = 0; parts[i]; i++)
+          ide_shortcut_chord_get_nth_key (chord, 0, NULL, &first_mod);
+
+          for (guint i = 0; i < len; i++)
             {
+              g_autofree gchar *accel = NULL;
               GtkWidget *label;
+              GdkModifierType mod = 0;
+              guint keyval = 0;
+
+              ide_shortcut_chord_get_nth_key (chord, i, &keyval, &mod);
+
+              if (i > 0 && (mod & first_mod) == first_mod)
+                accel = gtk_accelerator_name (keyval, mod & ~first_mod);
+              else
+                accel = gtk_accelerator_name (keyval, mod);
 
               label = g_object_new (GTK_TYPE_SHORTCUT_LABEL,
-                                    "accelerator", parts[i],
+                                    "accelerator", accel,
                                     "visible", TRUE,
                                     NULL);
               gtk_container_add (GTK_CONTAINER (self), label);

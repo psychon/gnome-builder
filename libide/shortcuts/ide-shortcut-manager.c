@@ -962,3 +962,40 @@ _ide_shortcut_manager_get_root (IdeShortcutManager *self)
 
   return priv->root;
 }
+
+/**
+ * ide_shortcut_manager_add_shortcut_entries:
+ * @self: (nullable): a #IdeShortcutManager or %NULL for the default
+ * @shortcuts: (array length=n_shortcuts): shortcuts to add
+ * @n_shortcuts: the number of entries in @shortcuts
+ * @translation_domain: (nullable): the gettext domain to use for translations
+ *
+ * This method will add @shortcuts to the #IdeShortcutManager.
+ *
+ * This provides a simple way for widgets to add their shortcuts to the manager
+ * so that they may be overriden by themes or the end user.
+ */
+void
+ide_shortcut_manager_add_shortcut_entries (IdeShortcutManager     *self,
+                                           const IdeShortcutEntry *shortcuts,
+                                           guint                   n_shortcuts,
+                                           const gchar            *translation_domain)
+{
+  g_return_if_fail (!self || IDE_IS_SHORTCUT_MANAGER (self));
+  g_return_if_fail (shortcuts != NULL || n_shortcuts == 0);
+
+  if (self == NULL)
+    self = ide_shortcut_manager_get_default ();
+
+  for (guint i = 0; i < n_shortcuts; i++)
+    {
+      const IdeShortcutEntry *entry = &shortcuts[i];
+
+      ide_shortcut_manager_add_command (self,
+                                        g_dgettext (translation_domain, entry->command),
+                                        g_dgettext (translation_domain, entry->section),
+                                        g_dgettext (translation_domain, entry->group),
+                                        g_dgettext (translation_domain, entry->title),
+                                        g_dgettext (translation_domain, entry->subtitle));
+    }
+}

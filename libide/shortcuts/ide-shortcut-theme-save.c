@@ -30,6 +30,7 @@ ide_shortcut_theme_save_to_stream (IdeShortcutTheme  *self,
   GHashTable *contexts;
   GHashTableIter iter;
   const gchar *name;
+  const gchar *parent;
   const gchar *title;
   const gchar *subtitle;
 
@@ -41,13 +42,16 @@ ide_shortcut_theme_save_to_stream (IdeShortcutTheme  *self,
 
   str = g_string_new ("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
 
-  g_string_append (str, "<theme>\n");
-
   name = ide_shortcut_theme_get_name (self);
+  parent = ide_shortcut_theme_get_parent_name (self);
   title = ide_shortcut_theme_get_title (self);
   subtitle = ide_shortcut_theme_get_subtitle (self);
 
-  g_string_append_printf (str, "  <property name=\"name\">%s</property>\n", name ? name : "");
+  if (parent != NULL)
+    g_string_append_printf (str, "<theme name=\"%s\" parent=\"%s\">\n", name, parent);
+  else
+    g_string_append_printf (str, "<theme name=\"%s\">\n", name);
+
   g_string_append_printf (str, "  <property name=\"title\" translatable=\"yes\">%s</property>\n", title ? title : "");
   g_string_append_printf (str, "  <property name=\"subtitle\" translatable=\"yes\">%s</property>\n", subtitle ? subtitle : "");
 

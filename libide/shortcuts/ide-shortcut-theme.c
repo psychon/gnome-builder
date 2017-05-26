@@ -24,6 +24,7 @@
 typedef struct
 {
   gchar      *name;
+  gchar      *parent_name;
   gchar      *title;
   gchar      *subtitle;
   GHashTable *contexts;
@@ -34,6 +35,7 @@ typedef struct
 enum {
   PROP_0,
   PROP_NAME,
+  PROP_PARENT_NAME,
   PROP_SUBTITLE,
   PROP_TITLE,
   N_PROPS
@@ -50,6 +52,7 @@ ide_shortcut_theme_finalize (GObject *object)
   IdeShortcutThemePrivate *priv = ide_shortcut_theme_get_instance_private (self);
 
   g_clear_pointer (&priv->name, g_free);
+  g_clear_pointer (&priv->parent_name, g_free);
   g_clear_pointer (&priv->title, g_free);
   g_clear_pointer (&priv->subtitle, g_free);
   g_clear_pointer (&priv->contexts, g_hash_table_unref);
@@ -71,6 +74,10 @@ ide_shortcut_theme_get_property (GObject    *object,
     {
     case PROP_NAME:
       g_value_set_string (value, ide_shortcut_theme_get_name (self));
+      break;
+
+    case PROP_PARENT_NAME:
+      g_value_set_string (value, ide_shortcut_theme_get_parent_name (self));
       break;
 
     case PROP_TITLE:
@@ -101,11 +108,17 @@ ide_shortcut_theme_set_property (GObject      *object,
       priv->name = g_value_dup_string (value);
       break;
 
+    case PROP_PARENT_NAME:
+      ide_shortcut_theme_set_parent_name (self, g_value_get_string (value));
+      break;
+
     case PROP_TITLE:
+      g_free (priv->title);
       priv->title = g_value_dup_string (value);
       break;
 
     case PROP_SUBTITLE:
+      g_free (priv->subtitle);
       priv->subtitle = g_value_dup_string (value);
       break;
 
@@ -127,6 +140,13 @@ ide_shortcut_theme_class_init (IdeShortcutThemeClass *klass)
     g_param_spec_string ("name",
                          "Name",
                          "The name of the theme",
+                         NULL,
+                         (G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+
+  properties [PROP_PARENT_NAME] =
+    g_param_spec_string ("parent-name",
+                         "Parent Name",
+                         "The name of the parent shortcut theme",
                          NULL,
                          (G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
@@ -383,5 +403,59 @@ ide_shortcut_theme_set_accel_for_command (IdeShortcutTheme *self,
 
       chord = ide_shortcut_chord_new_from_string (accel);
       ide_shortcut_theme_set_chord_for_command (self, detailed_command_name, chord);
+    }
+}
+
+void
+_ide_shortcut_theme_set_name (IdeShortcutTheme *self,
+                              const gchar      *name)
+{
+  IdeShortcutThemePrivate *priv = ide_shortcut_theme_get_instance_private (self);
+
+  g_return_if_fail (IDE_IS_SHORTCUT_THEME (self));
+
+  if (g_strcmp0 (name, priv->name) != 0)
+    {
+      g_free (priv->name);
+      priv->name = g_strdup (name);
+      g_object_notify_by_pspec (G_OBJECT (self), properties [PROP_NAME]);
+    }
+}
+
+/**
+ * ide_shortcut_theme_get_parent_name:
+ * @self: a #IdeShortcutTheme
+ *
+ * Gets the name of the parent shortcut theme.
+ *
+ * This is used to resolve shortcuts from the parent theme without having to
+ * copy them directly into this shortcut theme. It allows for some level of
+ * copy-on-write (CoW).
+ *
+ * Returns: (nullable): The name of the parent theme, or %NULL if none is set.
+ */
+const gchar *
+ide_shortcut_theme_get_parent_name (IdeShortcutTheme *self)
+{
+  IdeShortcutThemePrivate *priv = ide_shortcut_theme_get_instance_private (self);
+
+  g_return_val_if_fail (IDE_IS_SHORTCUT_THEME (self), NULL);
+
+  return priv->parent_name;
+}
+
+void
+ide_shortcut_theme_set_parent_name (IdeShortcutTheme *self,
+                                    const gchar      *parent_name)
+{
+  IdeShortcutThemePrivate *priv = ide_shortcut_theme_get_instance_private (self);
+
+  g_return_if_fail (IDE_IS_SHORTCUT_THEME (self));
+
+  if (g_strcmp0 (parent_name, priv->parent_name) != 0)
+    {
+      g_free (priv->parent_name);
+      priv->parent_name = g_strdup (parent_name);
+      g_object_notify_by_pspec (G_OBJECT (self), properties [PROP_PARENT_NAME]);
     }
 }

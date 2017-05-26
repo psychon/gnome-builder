@@ -78,6 +78,7 @@ typedef struct
    */
   gulong hierarchy_changed_handler;
   gulong widget_destroy_handler;
+  gulong manager_changed_handler;
 } IdeShortcutControllerPrivate;
 
 typedef struct
@@ -152,6 +153,19 @@ ide_shortcut_controller_remove (IdeShortcutController *self,
 }
 
 static void
+ide_shortcut_controller_on_manager_changed (IdeShortcutController *self,
+                                            IdeShortcutManager    *manager)
+{
+  IdeShortcutControllerPrivate *priv = ide_shortcut_controller_get_instance_private (self);
+
+  g_assert (IDE_IS_SHORTCUT_CONTROLLER (self));
+  g_assert (IDE_IS_SHORTCUT_MANAGER (manager));
+
+  g_clear_pointer (&priv->current_chord, ide_shortcut_chord_free);
+  g_clear_object (&priv->context);
+}
+
+static void
 ide_shortcut_controller_widget_destroy (IdeShortcutController *self,
                                         GtkWidget             *widget)
 {
@@ -216,6 +230,9 @@ ide_shortcut_controller_disconnect (IdeShortcutController *self)
 
   g_signal_handler_disconnect (priv->widget, priv->hierarchy_changed_handler);
   priv->hierarchy_changed_handler = 0;
+
+  g_signal_handler_disconnect (ide_shortcut_manager_get_default (), priv->manager_changed_handler);
+  priv->manager_changed_handler = 0;
 }
 
 static void
@@ -225,6 +242,9 @@ ide_shortcut_controller_connect (IdeShortcutController *self)
 
   g_assert (IDE_IS_SHORTCUT_CONTROLLER (self));
   g_assert (GTK_IS_WIDGET (priv->widget));
+
+  g_clear_pointer (&priv->current_chord, ide_shortcut_chord_free);
+  g_clear_object (&priv->context);
 
   priv->widget_destroy_handler =
     g_signal_connect_swapped (priv->widget,
@@ -236,6 +256,12 @@ ide_shortcut_controller_connect (IdeShortcutController *self)
     g_signal_connect_swapped (priv->widget,
                               "hierarchy-changed",
                               G_CALLBACK (ide_shortcut_controller_widget_hierarchy_changed),
+                              self);
+
+  priv->manager_changed_handler =
+    g_signal_connect_swapped (ide_shortcut_manager_get_default (),
+                              "changed",
+                              G_CALLBACK (ide_shortcut_controller_on_manager_changed),
                               self);
 
   ide_shortcut_controller_widget_hierarchy_changed (self, NULL, priv->widget);
