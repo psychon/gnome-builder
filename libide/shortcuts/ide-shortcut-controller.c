@@ -114,6 +114,19 @@ static GQuark      controller_quark;
 static void ide_shortcut_controller_connect    (IdeShortcutController *self);
 static void ide_shortcut_controller_disconnect (IdeShortcutController *self);
 
+static IdeShortcutManager *
+ide_shortcut_controller_get_manager (IdeShortcutController *self)
+{
+  g_assert (IDE_IS_SHORTCUT_CONTROLLER (self));
+
+
+  /* TODO: We might want to locate the manager from the root controller
+   *       to allow for non-default shortcut managers.
+   */
+
+  return ide_shortcut_manager_get_default ();
+}
+
 static gboolean
 ide_shortcut_controller_is_mapped (IdeShortcutController *self)
 {
@@ -221,9 +234,12 @@ static void
 ide_shortcut_controller_disconnect (IdeShortcutController *self)
 {
   IdeShortcutControllerPrivate *priv = ide_shortcut_controller_get_instance_private (self);
+  IdeShortcutManager *manager;
 
   g_assert (IDE_IS_SHORTCUT_CONTROLLER (self));
   g_assert (GTK_IS_WIDGET (priv->widget));
+
+  manager = ide_shortcut_controller_get_manager (self);
 
   g_signal_handler_disconnect (priv->widget, priv->widget_destroy_handler);
   priv->widget_destroy_handler = 0;
@@ -231,7 +247,7 @@ ide_shortcut_controller_disconnect (IdeShortcutController *self)
   g_signal_handler_disconnect (priv->widget, priv->hierarchy_changed_handler);
   priv->hierarchy_changed_handler = 0;
 
-  g_signal_handler_disconnect (ide_shortcut_manager_get_default (), priv->manager_changed_handler);
+  g_signal_handler_disconnect (manager, priv->manager_changed_handler);
   priv->manager_changed_handler = 0;
 }
 
@@ -239,9 +255,12 @@ static void
 ide_shortcut_controller_connect (IdeShortcutController *self)
 {
   IdeShortcutControllerPrivate *priv = ide_shortcut_controller_get_instance_private (self);
+  IdeShortcutManager *manager;
 
   g_assert (IDE_IS_SHORTCUT_CONTROLLER (self));
   g_assert (GTK_IS_WIDGET (priv->widget));
+
+  manager = ide_shortcut_controller_get_manager (self);
 
   g_clear_pointer (&priv->current_chord, ide_shortcut_chord_free);
   g_clear_object (&priv->context);
@@ -259,7 +278,7 @@ ide_shortcut_controller_connect (IdeShortcutController *self)
                               self);
 
   priv->manager_changed_handler =
-    g_signal_connect_swapped (ide_shortcut_manager_get_default (),
+    g_signal_connect_swapped (manager,
                               "changed",
                               G_CALLBACK (ide_shortcut_controller_on_manager_changed),
                               self);
@@ -331,7 +350,7 @@ ide_shortcut_controller_real_set_context_named (IdeShortcutController *self,
   g_return_if_fail (IDE_IS_SHORTCUT_CONTROLLER (self));
   g_return_if_fail (name != NULL);
 
-  manager = ide_shortcut_manager_get_default ();
+  manager = ide_shortcut_controller_get_manager (self);
   theme = ide_shortcut_manager_get_theme (manager);
   context = ide_shortcut_theme_find_context_by_name (theme, name);
 
@@ -565,7 +584,7 @@ ide_shortcut_controller_get_context (IdeShortcutController *self)
       IdeShortcutManager *manager;
       IdeShortcutTheme *theme;
 
-      manager = ide_shortcut_manager_get_default ();
+      manager = ide_shortcut_controller_get_manager (self);
       theme = ide_shortcut_manager_get_theme (manager);
 
       /*
@@ -577,6 +596,43 @@ ide_shortcut_controller_get_context (IdeShortcutController *self)
     }
 
   return priv->context;
+}
+
+static IdeShortcutContext *
+ide_shortcut_controller_get_parent_context (IdeShortcutController *self)
+{
+  IdeShortcutControllerPrivate *priv = ide_shortcut_controller_get_instance_private (self);
+  IdeShortcutManager *manager;
+  IdeShortcutTheme *theme;
+  IdeShortcutTheme *parent;
+  const gchar *name = NULL;
+  const gchar *parent_name = NULL;
+
+  g_assert (IDE_IS_SHORTCUT_CONTROLLER (self));
+
+  manager = ide_shortcut_controller_get_manager (self);
+
+  theme = ide_shortcut_manager_get_theme (manager);
+  if (theme == NULL)
+    return NULL;
+
+  parent_name = ide_shortcut_theme_get_parent_name (theme);
+  if (parent_name == NULL)
+    return NULL;
+
+  parent = ide_shortcut_manager_get_theme_by_name (manager, parent_name);
+  if (parent == NULL)
+    return NULL;
+
+  if (priv->context != NULL)
+    {
+      name = ide_shortcut_context_get_name (priv->context);
+
+      if (name != NULL)
+        return ide_shortcut_theme_find_context_by_name (theme, name);
+    }
+
+  return ide_shortcut_theme_find_default_context (theme, priv->widget);
 }
 
 static IdeShortcutMatch
@@ -597,13 +653,18 @@ ide_shortcut_controller_process (IdeShortcutController  *self,
     return IDE_SHORTCUT_MATCH_NONE;
 
   /* Try to activate our current context */
-  context = ide_shortcut_controller_get_context (self);
-  if (match == IDE_SHORTCUT_MATCH_NONE && context != NULL)
+  if (match == IDE_SHORTCUT_MATCH_NONE &&
+      NULL != (context = ide_shortcut_controller_get_context (self)))
+    match = ide_shortcut_context_activate (context, priv->widget, chord);
+
+  /* If we didn't get a match, locate the context within the parent theme */
+  if (match == IDE_SHORTCUT_MATCH_NONE &&
+      NULL != (context = ide_shortcut_controller_get_parent_context (self)))
     match = ide_shortcut_context_activate (context, priv->widget, chord);
 
   /* If we didn't find a match, try our command context */
-  context = priv->command_context;
-  if (match == IDE_SHORTCUT_MATCH_NONE && context != NULL)
+  if (match == IDE_SHORTCUT_MATCH_NONE &&
+      NULL != (context = priv->command_context))
     match = ide_shortcut_context_activate (context, priv->widget, chord);
 
   /* Try to activate one of our descendant controllers */

@@ -119,13 +119,11 @@ Note that some key themes have more complex "modal" contexts (such as Vim).
 
    <?xml version="1.0" encoding="UTF-8"?>
    <theme name="default">
-
      <!-- Only map command when focused in an GtkEntry -->
      <context name="GtkEntry">
        <shortcut accelerator="<Control><Shift>r"
                      command="org.gnome.builder.commands.my-command"/>
      </context>
-
    </theme>
 
 

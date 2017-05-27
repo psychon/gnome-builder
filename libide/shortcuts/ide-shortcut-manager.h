@@ -65,6 +65,8 @@ void                ide_shortcut_manager_set_theme               (IdeShortcutMan
 const gchar        *ide_shortcut_manager_get_theme_name          (IdeShortcutManager     *self);
 void                ide_shortcut_manager_set_theme_name          (IdeShortcutManager     *self,
                                                                   const gchar            *theme_name);
+IdeShortcutTheme   *ide_shortcut_manager_get_theme_by_name       (IdeShortcutManager     *self,
+                                                                  const gchar            *theme_name);
 gboolean            ide_shortcut_manager_handle_event            (IdeShortcutManager     *self,
                                                                   const GdkEventKey      *event,
                                                                   GtkWidget              *toplevel);

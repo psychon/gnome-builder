@@ -999,3 +999,33 @@ ide_shortcut_manager_add_shortcut_entries (IdeShortcutManager     *self,
                                         g_dgettext (translation_domain, entry->subtitle));
     }
 }
+
+/**
+ * ide_shortcut_manager_get_theme_by_name:
+ * @self: a #IdeShortcutManager
+ *
+ * Locates a theme by the name of the theme.
+ *
+ * Returns: (transfer none) (nullable): A #IdeShortcutTheme or %NULL.
+ */
+IdeShortcutTheme *
+ide_shortcut_manager_get_theme_by_name (IdeShortcutManager *self,
+                                        const gchar        *theme_name)
+{
+  IdeShortcutManagerPrivate *priv = ide_shortcut_manager_get_instance_private (self);
+
+  g_return_val_if_fail (IDE_IS_SHORTCUT_MANAGER (self), NULL);
+  g_return_val_if_fail (theme_name != NULL, NULL);
+
+  for (guint i = 0; i < priv->themes->len; i++)
+    {
+      IdeShortcutTheme *theme = g_ptr_array_index (priv->themes, i);
+
+      g_assert (IDE_IS_SHORTCUT_THEME (theme));
+
+      if (g_strcmp0 (theme_name, ide_shortcut_theme_get_name (theme)) == 0)
+        return theme;
+    }
+
+  return NULL;
+}
