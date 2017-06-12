@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="{{Module}}Window" parent="GtkApplicationWindow">
+    <child type="titlebar">
+      <object class"GtkHeaderBar" id="header_bar">
+        <property name="visible">true</property>
+        <property name="show-close-button">true</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkLabel">
+        <property name="label">Hello, World!</property>
+        <property name="visible">true</property>
+      </object>
+    </child>
+  </template>
+</interface>
