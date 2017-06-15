@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<keytheme name="vim">
+  <property name="title">Vim</property>
+  <property name="subtitle" translatable="yes">Emulates the Vim text editor</property>
+  <resource path="/org/gnome/builder/keybindings/vim.css"/>
+
+</keytheme>

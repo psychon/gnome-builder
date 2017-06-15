@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<keytheme name="emacs">
+  <property name="title">Emacs</property>
+  <property name="subtitle" translatable="yes">Emulates the Emacs text editor</property>
+  <resource path="/org/gnome/builder/keybindings/emacs.css"/>
+</keytheme>

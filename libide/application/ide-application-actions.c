@@ -301,11 +301,14 @@ ide_application_actions_shortcuts (GSimpleAction *action,
                                    gpointer       user_data)
 {
   IdeApplication *self = user_data;
+  DzlShortcutManager *manager;
   GtkWindow *window;
   GtkWindow *parent = NULL;
   GList *list;
 
   g_assert (IDE_IS_APPLICATION (self));
+
+  manager = dzl_application_get_shortcut_manager (DZL_APPLICATION (self));
 
   list = gtk_application_get_windows (GTK_APPLICATION (self));
 
@@ -313,7 +316,7 @@ ide_application_actions_shortcuts (GSimpleAction *action,
     {
       window = list->data;
 
-      if (IDE_IS_SHORTCUTS_WINDOW (window))
+      if (DZL_IS_SHORTCUTS_WINDOW (window))
         {
           gtk_window_present (window);
           return;
@@ -326,11 +329,13 @@ ide_application_actions_shortcuts (GSimpleAction *action,
         }
     }
 
-  window = g_object_new (IDE_TYPE_SHORTCUTS_WINDOW,
+  window = g_object_new (DZL_TYPE_SHORTCUTS_WINDOW,
                          "application", self,
                          "window-position", GTK_WIN_POS_CENTER,
                          "transient-for", parent,
                          NULL);
+
+  dzl_shortcut_manager_add_shortcuts_to_window (manager, DZL_SHORTCUTS_WINDOW (window));
 
   gtk_window_present (GTK_WINDOW (window));
 }

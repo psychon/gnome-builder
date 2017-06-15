@@ -18,6 +18,9 @@
 
 #define G_LOG_DOMAIN "ide-workbench"
 
+#include "config.h"
+
+#include <dazzle.h>
 #include <glib/gi18n.h>
 
 #include "ide-debug.h"
@@ -37,6 +40,7 @@
 #include "workbench/ide-workbench-addin.h"
 #include "workbench/ide-workbench-header-bar.h"
 #include "workbench/ide-workbench-private.h"
+#include "workbench/ide-workbench-shortcuts.h"
 #include "workbench/ide-workbench.h"
 
 #define STABLIZE_DELAY_MSEC 50
@@ -434,6 +438,11 @@ ide_workbench_init (IdeWorkbench *self)
   g_autoptr(GtkWindowGroup) window_group = NULL;
 
   gtk_widget_init_template (GTK_WIDGET (self));
+
+  dzl_shortcut_manager_add_shortcut_entries (NULL,
+                                             ide_workbench_shortcuts,
+                                             G_N_ELEMENTS (ide_workbench_shortcuts),
+                                             GETTEXT_PACKAGE);
 
   self->perspectives = g_list_store_new (IDE_TYPE_PERSPECTIVE);
 

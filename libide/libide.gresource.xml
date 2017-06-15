@@ -49,6 +49,12 @@
     <file compressed="true" alias="vim.css">../data/keybindings/vim.css</file>
   </gresource>
 
+  <gresource prefix="/org/gnome/builder/shortcuts">
+    <file compressed="true" preprocess="xml-stripblanks" alias="default.keytheme">../data/shortcuts/default.keytheme</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="emacs.keytheme">../data/shortcuts/emacs.keytheme</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="vim.keytheme">../data/shortcuts/vim.keytheme</file>
+  </gresource>
+
   <gresource prefix="/org/gnome/builder/ui">
     <file compressed="true" preprocess="xml-stripblanks" alias="ide-editor-frame.ui">editor/ide-editor-frame.ui</file>
     <file compressed="true" preprocess="xml-stripblanks" alias="ide-editor-layout-stack-controls.ui">editor/ide-editor-layout-stack-controls.ui</file>

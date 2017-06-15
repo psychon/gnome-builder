@@ -134,6 +134,8 @@ ide_preferences_builtin_register_appearance (DzlPreferences *preferences)
 static void
 ide_preferences_builtin_register_keyboard (DzlPreferences *preferences)
 {
+  GtkWidget *editor;
+
   dzl_preferences_add_page (preferences, "keyboard", _("Keyboard"), 400);
 
   dzl_preferences_add_list_group (preferences, "keyboard", "mode", _("Emulation"), GTK_SELECTION_NONE, 0);
@@ -144,6 +146,14 @@ ide_preferences_builtin_register_keyboard (DzlPreferences *preferences)
   dzl_preferences_add_list_group (preferences, "keyboard", "movements", _("Movement"), GTK_SELECTION_NONE, 100);
   dzl_preferences_add_switch (preferences, "keyboard", "movements", "org.gnome.builder.editor", "smart-home-end", NULL, NULL, _("Smart Home and End"), _("Home moves to first non-whitespace character"), NULL, 0);
   dzl_preferences_add_switch (preferences, "keyboard", "movements", "org.gnome.builder.editor", "smart-backspace", NULL, NULL, _("Smart Backspace"), _("Backspace will remove extra space to keep you aligned with your indentation"), NULL, 100);
+
+  dzl_preferences_add_group (preferences, "keyboard", "editing", NULL, 200);
+
+  /* add our shortcut editing widget */
+  editor = dzl_shortcut_theme_editor_new ();
+  g_object_bind_property (dzl_shortcut_manager_get_default(), "theme", editor, "theme", G_BINDING_SYNC_CREATE);
+  gtk_widget_show (editor);
+  dzl_preferences_add_custom (preferences, "keyboard", "editing", GTK_WIDGET (editor), NULL, 0);
 }
 
 static void

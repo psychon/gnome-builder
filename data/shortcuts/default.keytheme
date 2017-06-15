@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<keytheme name="default">
+  <property name="title">Builder</property>
+  <property name="subtitle" translatable="yes">Builder's default keyboard shortcuts which mimic Gedit</property>
+
+</keytheme>

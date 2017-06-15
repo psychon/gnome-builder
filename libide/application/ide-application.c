@@ -94,15 +94,26 @@ ide_application_register_keybindings (IdeApplication *self)
 {
   g_autoptr(GSettings) settings = NULL;
   g_autofree gchar *name = NULL;
+  DzlShortcutManager *shortcuts;
+  guint n_themes;
 
   IDE_ENTRY;
 
   g_assert (IDE_IS_APPLICATION (self));
 
+  shortcuts = dzl_application_get_shortcut_manager (DZL_APPLICATION (self));
+
+  /* Log the themes we discovered to aide in debugging. */
+  n_themes = g_list_model_get_n_items (G_LIST_MODEL (shortcuts));
+  for (guint i = 0; i < n_themes; i++)
+    {
+      g_autoptr(DzlShortcutTheme) theme = g_list_model_get_item (G_LIST_MODEL (shortcuts), i);
+      g_debug ("Found shortcut theme “%s”", dzl_shortcut_theme_get_name (theme));
+    }
+
+  /* Now bind our GSetting to the particular setting */
   settings = g_settings_new ("org.gnome.builder.editor");
-  name = g_settings_get_string (settings, "keybindings");
-  self->keybindings = ide_keybindings_new (GTK_APPLICATION (self), name);
-  g_settings_bind (settings, "keybindings", self->keybindings, "mode", G_SETTINGS_BIND_GET);
+  g_settings_bind (settings, "keybindings", shortcuts, "theme-name", G_SETTINGS_BIND_GET);
 
   IDE_EXIT;
 }
@@ -361,7 +372,6 @@ ide_application_startup (GApplication *application)
       ide_application_make_skeleton_dirs (self);
       ide_language_defaults_init_async (NULL, ide_application_language_defaults_cb, NULL);
       ide_application_register_settings (self);
-      ide_application_register_keybindings (self);
       ide_application_actions_init (self);
 
       modeline_parser_init ();
@@ -372,7 +382,15 @@ ide_application_startup (GApplication *application)
   G_APPLICATION_CLASS (ide_application_parent_class)->startup (application);
 
   if (self->mode == IDE_APPLICATION_MODE_PRIMARY)
-    ide_application_register_plugin_accessories (self);
+    {
+      /*
+       * These need to be registered after chaining up to the
+       * DzlApplication::startup() so that all of the other resources have been
+       * properly loaded.
+       */
+      ide_application_register_keybindings (self);
+      ide_application_register_plugin_accessories (self);
+    }
 
   ide_application_load_addins (self);
 }
