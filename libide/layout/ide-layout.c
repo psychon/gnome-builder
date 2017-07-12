@@ -25,11 +25,13 @@
 G_DEFINE_TYPE (IdeLayout, ide_layout, DZL_TYPE_DOCK_BIN)
 
 static GtkWidget *
-ide_layout_create_edge (DzlDockBin *dock)
+ide_layout_create_edge (DzlDockBin      *dock,
+                        GtkPositionType  edge)
 {
   g_assert (IDE_IS_LAYOUT (dock));
 
   return g_object_new (IDE_TYPE_LAYOUT_PANE,
+                       "edge", edge,
                        "visible", TRUE,
                        "reveal-child", FALSE,
                        NULL);
