@@ -159,6 +159,11 @@ configure_file(
   configuration: conf
 )
 
+ld_supports_version_script = cc.links('''
+  int main (void) { return 0; }
+''', args: '-Wl,--version-script,' + join_paths(meson.source_root(), 'libide/ide.map'))
+message('Linker supports --version-script: @0@'.format(ld_supports_version_script))
+
 # Commonly used deps
 libgio_dep = dependency('gio-2.0', version: '>= 2.53.2')
 libgiounix_dep = dependency('gio-unix-2.0')
