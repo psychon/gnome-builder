@@ -1,12 +1,22 @@
 {{name_}}_sources = [
-  '{{if language == "c"}}main.c{{else if language == "cpp"}}main.cpp{{end}}',
+  {{if language == "c"}}'main.c',
+  '{{prefix}}-window.c',{{else if  language == "vala"}}'main.vala'{{end}}
 ]
 
 {{name_}}_deps = [
-  dependency('glib-2.0'),
+  dependency('gio-2.0', version: '>= 2.50'),
+  dependency('gtk+-3.0', version: '>= 3.22'),
 ]
 
+gnome = import('gnome')
+
+{{name_}}_sources += gnome.compile_resources('{{prefix}}-resources',
+  '{{prefix}}.gresource.xml',
+  c_name: '{{prefix}}'
+)
+
 executable('{{name}}', {{name_}}_sources,
+{{if language == "vala"}}  vala_args: '--target-glib=2.50',{{end}}
   dependencies: {{name_}}_deps,
   install: true,
 )

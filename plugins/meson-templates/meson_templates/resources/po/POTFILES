@@ -1,1 +1,11 @@
-src/{{if language == "c"}}main.c{{else if language == "cpp"}}main.cpp{{end}}
+data/{{appid}}.desktop.in
+data/{{appid}}.appdata.xml.in
+data/{{appid}}.gschema.xml
+{{if language == "c"}}src/main.c{{end}}
+{{if language == "c"}}src/{{prefix}}-window.c{{end}}
+{{if language == "c"}}src/{{prefix}}-window.ui{{end}}
+{{if language == "vala"}}src/main.vala{{end}}
+{{if language == "vala"}}src/{{prefix}}-window.ui{{end}}
+{{if language == "javascript"}}src/main.js{{end}}
+{{if language == "javascript"}}src/{{prefix}}Window.js{{end}}
+{{if language == "javascript"}}src/{{prefix}}Window.ui{{end}}

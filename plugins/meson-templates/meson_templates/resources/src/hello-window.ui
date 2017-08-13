@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="{{Prefix}}Window" parent="GtkApplicationWindow">
+    <child type="titlebar">
+      <object class="GtkHeaderBar" id="headerbar">
+        <property name="visible">true</property>
+        <property name="show-close-button">true</property>
+        <property name="title">Hello, World!</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkLabel" id="label">
+        <property name="label">Hello, World!</property>
+        <property name="visible">true</property>
+        <attributes>
+          <attribute name="weight" value="bold"/>
+          <attribute name="scale" value="2"/>
+        </attributes>
+      </object>
+    </child>
+  </template>
+</interface>
