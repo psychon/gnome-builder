@@ -62,6 +62,7 @@ G_BEGIN_DECLS
 #include "buildsystem/ide-configuration-provider.h"
 #include "buildsystem/ide-environment-variable.h"
 #include "buildsystem/ide-environment.h"
+#include "debugger/ide-debug-manager.h"
 #include "debugger/ide-debugger-breakpoint.h"
 #include "debugger/ide-debugger-frame.h"
 #include "debugger/ide-debugger-instruction.h"

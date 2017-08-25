@@ -50,7 +50,7 @@ typedef struct
   guint                  is_running : 1;
 } IdeDebuggerPrivate;
 
-G_DEFINE_ABSTRACT_TYPE_WITH_CODE (IdeDebugger, ide_debugger, G_TYPE_OBJECT,
+G_DEFINE_ABSTRACT_TYPE_WITH_CODE (IdeDebugger, ide_debugger, IDE_TYPE_OBJECT,
                                   G_ADD_PRIVATE (IdeDebugger)
                                   G_IMPLEMENT_INTERFACE (G_TYPE_ACTION_GROUP,
                                                          _ide_debugger_class_init_actions))
@@ -1945,4 +1945,52 @@ ide_debugger_disassemble_finish (IdeDebugger   *self,
   g_return_val_if_fail (G_IS_TASK (result), NULL);
 
   return IDE_DEBUGGER_GET_CLASS (self)->disassemble_finish (self, result, error);
+}
+
+/**
+ * ide_debugger_supports_runner:
+ * @self: an #IdeDebugger
+ * @runner: an #IdeRunner
+ * @priority: (out): A location for a priority
+ *
+ * Checks if the debugger supports a given runner. The debugger may need
+ * to check if the binary type matches it's expectation.
+ *
+ * Returns: %TRUE if the #IdeDebugger supports the runner.
+ */
+gboolean
+ide_debugger_supports_runner (IdeDebugger *self,
+                              IdeRunner   *runner,
+                              gint        *priority)
+{
+  gint dummy = 0;
+
+  g_return_val_if_fail (IDE_IS_DEBUGGER (self), FALSE);
+  g_return_val_if_fail (IDE_IS_RUNNER (runner), FALSE);
+
+  if (priority == NULL)
+    priority = &dummy;
+  else
+    *priority = 0;
+
+  return IDE_DEBUGGER_GET_CLASS (self)->supports_runner (self, runner, priority);
+}
+
+/**
+ * ide_debugger_prepare:
+ * @self: an #IdeDebugger
+ * @runner: an #IdeRunner
+ *
+ * Prepares the runner to launch a debugger and target process.
+ *
+ * Since: 3.26
+ */
+void
+ide_debugger_prepare (IdeDebugger *self,
+                      IdeRunner   *runner)
+{
+  g_return_if_fail (IDE_IS_DEBUGGER (self));
+  g_return_if_fail (IDE_IS_RUNNER (runner));
+
+  IDE_DEBUGGER_GET_CLASS (self)->prepare (self, runner);
 }

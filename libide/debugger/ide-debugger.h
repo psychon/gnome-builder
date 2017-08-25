@@ -20,25 +20,28 @@
 
 #include <gio/gio.h>
 
-#include "ide-debugger-breakpoint.h"
-#include "ide-debugger-frame.h"
-#include "ide-debugger-instruction.h"
-#include "ide-debugger-library.h"
-#include "ide-debugger-register.h"
-#include "ide-debugger-thread-group.h"
-#include "ide-debugger-thread.h"
-#include "ide-debugger-types.h"
-#include "ide-debugger-variable.h"
+#include "ide-object.h"
+
+#include "debugger/ide-debugger-breakpoint.h"
+#include "debugger/ide-debugger-frame.h"
+#include "debugger/ide-debugger-instruction.h"
+#include "debugger/ide-debugger-library.h"
+#include "debugger/ide-debugger-register.h"
+#include "debugger/ide-debugger-thread-group.h"
+#include "debugger/ide-debugger-thread.h"
+#include "debugger/ide-debugger-types.h"
+#include "debugger/ide-debugger-variable.h"
+#include "runner/ide-runner.h"
 
 G_BEGIN_DECLS
 
 #define IDE_TYPE_DEBUGGER (ide_debugger_get_type())
 
-G_DECLARE_DERIVABLE_TYPE (IdeDebugger, ide_debugger, IDE, DEBUGGER, GObject)
+G_DECLARE_DERIVABLE_TYPE (IdeDebugger, ide_debugger, IDE, DEBUGGER, IdeObject)
 
 struct _IdeDebuggerClass
 {
-  GObjectClass parent_class;
+  IdeObjectClass parent_class;
 
   /* Signals */
 
@@ -76,6 +79,11 @@ struct _IdeDebuggerClass
 
   /* Virtual Functions */
 
+  gboolean   (*supports_runner)          (IdeDebugger                  *self,
+                                          IdeRunner                    *runner,
+                                          gint                         *priority);
+  void       (*prepare)                  (IdeDebugger                  *self,
+                                          IdeRunner                    *runner);
   gboolean   (*get_can_move)             (IdeDebugger                  *self,
                                           IdeDebuggerMovement           movement);
   void       (*move_async)               (IdeDebugger                  *self,
@@ -210,6 +218,11 @@ struct _IdeDebuggerClass
   gpointer _reserved32;
 };
 
+gboolean           ide_debugger_supports_runner           (IdeDebugger                    *self,
+                                                           IdeRunner                      *runner,
+                                                           gint                           *priority);
+void               ide_debugger_prepare                   (IdeDebugger                    *self,
+                                                           IdeRunner                      *runner);
 GListModel        *ide_debugger_get_breakpoints           (IdeDebugger                    *self);
 const gchar       *ide_debugger_get_display_name          (IdeDebugger                    *self);
 void               ide_debugger_set_display_name          (IdeDebugger                    *self,
