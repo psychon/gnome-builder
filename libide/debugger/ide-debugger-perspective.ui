@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="IdeDebuggerPerspective" parent="IdeLayout">
+    <child>
+      <object class="IdeLayoutGrid" id="layout_grid">
+        <property name="visible">true</property>
+      </object>
+    </child>
+    <child internal-child="bottom">
+      <object class="DzlDockBinEdge">
+        <property name="reveal-child">true</property>
+      </object>
+    </child>
+    <child type="bottom">
+      <object class="DzlDockStack">
+        <property name="hexpand">true</property>
+        <property name="visible">true</property>
+        <child>
+          <object class="DzlDockWidget">
+            <property name="title" translatable="yes">Application Output</property>
+            <property name="expand">true</property>
+            <property name="visible">true</property>
+          </object>
+        </child>
+        <child>
+          <object class="DzlDockWidget">
+            <property name="title" translatable="yes">Breakpoints</property>
+            <property name="expand">true</property>
+            <property name="visible">true</property>
+            <child>
+              <object class="IdeDebuggerBreakpointsView" id="breakpoints_view">
+                <property name="visible">true</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="DzlDockWidget">
+            <property name="title" translatable="yes">Threads</property>
+            <property name="expand">true</property>
+            <property name="visible">true</property>
+            <child>
+              <object class="DzlMultiPaned">
+                <property name="orientation">horizontal</property>
+                <property name="visible">true</property>
+                <child>
+                  <object class="IdeDebuggerThreadsView" id="threads_view">
+                    <property name="hexpand">true</property>
+                    <property name="visible">true</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="IdeDebuggerLocalsView" id="locals_view">
+                    <property name="hexpand">true</property>
+                    <property name="visible">true</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="DzlDockWidget">
+            <property name="title" translatable="yes">Registers</property>
+            <property name="expand">true</property>
+            <property name="visible">true</property>
+            <child>
+              <object class="IdeDebuggerRegistersView" id="registers_view">
+                <property name="visible">true</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="DzlDockWidget">
+            <property name="title" translatable="yes">Libraries</property>
+            <property name="expand">true</property>
+            <property name="visible">true</property>
+            <child>
+              <object class="IdeDebuggerLibrariesView" id="libraries_view">
+                <property name="visible">true</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="DzlDockWidget">
+            <property name="title" translatable="yes">Log</property>
+            <property name="expand">true</property>
+            <property name="visible">true</property>
+            <child>
+              <object class="GtkScrolledWindow">
+                <child>
+                  <object class="GtkTextView" id="log_text_view">
+                    <property name="buffer">log_buffer</property>
+                    <property name="visible">true</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+  <object class="GtkTextBuffer" id="log_buffer">
+  </object>
+</interface>

@@ -1,4 +1,4 @@
-/* ide-debug-manager.h
+/* ide-debugger-gutter-renderer.h
  *
  * Copyright (C) 2017 Christian Hergert <chergert@redhat.com>
  *
@@ -18,19 +18,20 @@
 
 #pragma once
 
-#include "ide-object.h"
+#include <gtksourceview/gtksource.h>
+
+#include "ide-types.h"
+
+#include "debugger/ide-debugger-breakpoints.h"
 
 G_BEGIN_DECLS
 
-#define IDE_TYPE_DEBUG_MANAGER (ide_debug_manager_get_type())
+#define IDE_TYPE_DEBUGGER_GUTTER_RENDERER (ide_debugger_gutter_renderer_get_type())
 
-G_DECLARE_FINAL_TYPE (IdeDebugManager, ide_debug_manager, IDE, DEBUG_MANAGER, IdeObject)
+G_DECLARE_FINAL_TYPE (IdeDebuggerGutterRenderer, ide_debugger_gutter_renderer, IDE, DEBUGGER_GUTTER_RENDERER, GtkSourceGutterRendererPixbuf)
 
-IdeDebugger *ide_debug_manager_get_debugger (IdeDebugManager  *self);
-gboolean     ide_debug_manager_get_active   (IdeDebugManager  *self);
-gboolean     ide_debug_manager_start        (IdeDebugManager  *self,
-                                             IdeRunner        *runner,
-                                             GError          **error);
-void         ide_debug_manager_stop         (IdeDebugManager  *self);
+GtkSourceGutterRenderer *ide_debugger_gutter_renderer_new             (void);
+void                     ide_debugger_gutter_renderer_set_breakpoints (IdeDebuggerGutterRenderer *self,
+                                                                       IdeDebuggerBreakpoints    *breakpoints);
 
 G_END_DECLS

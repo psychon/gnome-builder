@@ -18,78 +18,82 @@
 
 #pragma once
 
+#include "ide-debug-manager.h"
 #include "ide-debugger.h"
+#include "ide-debugger-breakpoints.h"
 
 G_BEGIN_DECLS
 
-void       _ide_debugger_class_init_actions            (GActionGroupInterface          *iface);
-void       _ide_debugger_update_actions                (IdeDebugger                    *self);
-gboolean   _ide_debugger_get_has_started               (IdeDebugger                    *self);
-void       _ide_debugger_real_list_frames_async        (IdeDebugger                    *self,
-                                                        IdeDebuggerThread              *thread,
-                                                        GCancellable                   *cancellable,
-                                                        GAsyncReadyCallback             callback,
-                                                        gpointer                        user_data);
-GPtrArray *_ide_debugger_real_list_frames_finish       (IdeDebugger                    *self,
-                                                        GAsyncResult                   *result,
-                                                        GError                        **error);
-void       _ide_debugger_real_interrupt_async          (IdeDebugger                    *self,
-                                                        IdeDebuggerThreadGroup         *thread_group,
-                                                        GCancellable                   *cancellable,
-                                                        GAsyncReadyCallback             callback,
-                                                        gpointer                        user_data);
-gboolean   _ide_debugger_real_interrupt_finish         (IdeDebugger                    *self,
-                                                        GAsyncResult                   *result,
-                                                        GError                        **error);
-void       _ide_debugger_real_send_signal_async        (IdeDebugger                    *self,
-                                                        gint                            signum,
-                                                        GCancellable                   *cancellable,
-                                                        GAsyncReadyCallback             callback,
-                                                        gpointer                        user_data);
-gboolean   _ide_debugger_real_send_signal_finish       (IdeDebugger                    *self,
-                                                        GAsyncResult                   *result,
-                                                        GError                        **error);
-void       _ide_debugger_real_modify_breakpoint_async  (IdeDebugger                    *self,
-                                                        IdeDebuggerBreakpointChange     change,
-                                                        IdeDebuggerBreakpoint          *breakpoint,
-                                                        GCancellable                   *cancellable,
-                                                        GAsyncReadyCallback             callback,
-                                                        gpointer                        user_data);
-gboolean   _ide_debugger_real_modify_breakpoint_finish (IdeDebugger                    *self,
-                                                        GAsyncResult                   *result,
-                                                        GError                        **error);
-void       _ide_debugger_real_list_params_async        (IdeDebugger                    *self,
-                                                        IdeDebuggerThread              *thread,
-                                                        IdeDebuggerFrame               *frame,
-                                                        GCancellable                   *cancellable,
-                                                        GAsyncReadyCallback             callback,
-                                                        gpointer                        user_data);
-GPtrArray *_ide_debugger_real_list_params_finish       (IdeDebugger                    *self,
-                                                        GAsyncResult                   *result,
-                                                        GError                        **error);
-void       _ide_debugger_real_list_locals_async        (IdeDebugger                    *self,
-                                                        IdeDebuggerThread              *thread,
-                                                        IdeDebuggerFrame               *frame,
-                                                        GCancellable                   *cancellable,
-                                                        GAsyncReadyCallback             callback,
-                                                        gpointer                        user_data);
-GPtrArray *_ide_debugger_real_list_locals_finish       (IdeDebugger                    *self,
-                                                        GAsyncResult                   *result,
-                                                        GError                        **error);
-void       _ide_debugger_real_list_registers_async     (IdeDebugger                    *self,
-                                                        GCancellable                   *cancellable,
-                                                        GAsyncReadyCallback             callback,
-                                                        gpointer                        user_data);
-GPtrArray *_ide_debugger_real_list_registers_finish    (IdeDebugger                    *self,
-                                                        GAsyncResult                   *result,
-                                                        GError                        **error);
-void       _ide_debugger_real_disassemble_async        (IdeDebugger                    *self,
-                                                        const IdeDebuggerAddressRange  *range,
-                                                        GCancellable                   *cancellable,
-                                                        GAsyncReadyCallback             callback,
-                                                        gpointer                        user_data);
-GPtrArray *_ide_debugger_real_disassemble_finish       (IdeDebugger                    *self,
-                                                        GAsyncResult                   *result,
-                                                        GError                        **error);
+IdeDebuggerBreakpoints *_ide_debug_manager_get_breakpoints          (IdeDebugManager                *self,
+                                                                     GFile                          *file);
+void                    _ide_debugger_class_init_actions            (GActionGroupInterface          *iface);
+void                    _ide_debugger_update_actions                (IdeDebugger                    *self);
+gboolean                _ide_debugger_get_has_started               (IdeDebugger                    *self);
+void                    _ide_debugger_real_list_frames_async        (IdeDebugger                    *self,
+                                                                     IdeDebuggerThread              *thread,
+                                                                     GCancellable                   *cancellable,
+                                                                     GAsyncReadyCallback             callback,
+                                                                     gpointer                        user_data);
+GPtrArray              *_ide_debugger_real_list_frames_finish       (IdeDebugger                    *self,
+                                                                     GAsyncResult                   *result,
+                                                                     GError                        **error);
+void                    _ide_debugger_real_interrupt_async          (IdeDebugger                    *self,
+                                                                     IdeDebuggerThreadGroup         *thread_group,
+                                                                     GCancellable                   *cancellable,
+                                                                     GAsyncReadyCallback             callback,
+                                                                     gpointer                        user_data);
+gboolean                _ide_debugger_real_interrupt_finish         (IdeDebugger                    *self,
+                                                                     GAsyncResult                   *result,
+                                                                     GError                        **error);
+void                    _ide_debugger_real_send_signal_async        (IdeDebugger                    *self,
+                                                                     gint                            signum,
+                                                                     GCancellable                   *cancellable,
+                                                                     GAsyncReadyCallback             callback,
+                                                                     gpointer                        user_data);
+gboolean                _ide_debugger_real_send_signal_finish       (IdeDebugger                    *self,
+                                                                     GAsyncResult                   *result,
+                                                                     GError                        **error);
+void                    _ide_debugger_real_modify_breakpoint_async  (IdeDebugger                    *self,
+                                                                     IdeDebuggerBreakpointChange     change,
+                                                                     IdeDebuggerBreakpoint          *breakpoint,
+                                                                     GCancellable                   *cancellable,
+                                                                     GAsyncReadyCallback             callback,
+                                                                     gpointer                        user_data);
+gboolean                _ide_debugger_real_modify_breakpoint_finish (IdeDebugger                    *self,
+                                                                     GAsyncResult                   *result,
+                                                                     GError                        **error);
+void                    _ide_debugger_real_list_params_async        (IdeDebugger                    *self,
+                                                                     IdeDebuggerThread              *thread,
+                                                                     IdeDebuggerFrame               *frame,
+                                                                     GCancellable                   *cancellable,
+                                                                     GAsyncReadyCallback             callback,
+                                                                     gpointer                        user_data);
+GPtrArray              *_ide_debugger_real_list_params_finish       (IdeDebugger                    *self,
+                                                                     GAsyncResult                   *result,
+                                                                     GError                        **error);
+void                    _ide_debugger_real_list_locals_async        (IdeDebugger                    *self,
+                                                                     IdeDebuggerThread              *thread,
+                                                                     IdeDebuggerFrame               *frame,
+                                                                     GCancellable                   *cancellable,
+                                                                     GAsyncReadyCallback             callback,
+                                                                     gpointer                        user_data);
+GPtrArray              *_ide_debugger_real_list_locals_finish       (IdeDebugger                    *self,
+                                                                     GAsyncResult                   *result,
+                                                                     GError                        **error);
+void                    _ide_debugger_real_list_registers_async     (IdeDebugger                    *self,
+                                                                     GCancellable                   *cancellable,
+                                                                     GAsyncReadyCallback             callback,
+                                                                     gpointer                        user_data);
+GPtrArray              *_ide_debugger_real_list_registers_finish    (IdeDebugger                    *self,
+                                                                     GAsyncResult                   *result,
+                                                                     GError                        **error);
+void                    _ide_debugger_real_disassemble_async        (IdeDebugger                    *self,
+                                                                     const IdeDebuggerAddressRange  *range,
+                                                                     GCancellable                   *cancellable,
+                                                                     GAsyncReadyCallback             callback,
+                                                                     gpointer                        user_data);
+GPtrArray              *_ide_debugger_real_disassemble_finish       (IdeDebugger                    *self,
+                                                                     GAsyncResult                   *result,
+                                                                     GError                        **error);
 
 G_END_DECLS

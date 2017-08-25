@@ -102,6 +102,7 @@ ide_debugger_break_mode_get_type (void)
     {
       GType _type_id;
       static const GEnumValue values[] = {
+        { IDE_DEBUGGER_BREAK_NONE, "IDE_DEBUGGER_BREAK_NONE", "none" },
         { IDE_DEBUGGER_BREAK_BREAKPOINT, "IDE_DEBUGGER_BREAK_BREAKPOINT", "breakpoint" },
         { IDE_DEBUGGER_BREAK_COUNTPOINT, "IDE_DEBUGGER_BREAK_COUNTPOINT", "countpoint" },
         { IDE_DEBUGGER_BREAK_WATCHPOINT, "IDE_DEBUGGER_BREAK_WATCHPOINT", "watchpoint" },

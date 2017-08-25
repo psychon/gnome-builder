@@ -1,4 +1,4 @@
-/* ide-debug-manager.h
+/* ide-debugger-perspective.h
  *
  * Copyright (C) 2017 Christian Hergert <chergert@redhat.com>
  *
@@ -18,19 +18,18 @@
 
 #pragma once
 
-#include "ide-object.h"
+#include "debugger/ide-debugger-breakpoint.h"
+#include "layout/ide-layout.h"
 
 G_BEGIN_DECLS
 
-#define IDE_TYPE_DEBUG_MANAGER (ide_debug_manager_get_type())
+#define IDE_TYPE_DEBUGGER_PERSPECTIVE (ide_debugger_perspective_get_type())
 
-G_DECLARE_FINAL_TYPE (IdeDebugManager, ide_debug_manager, IDE, DEBUG_MANAGER, IdeObject)
+G_DECLARE_FINAL_TYPE (IdeDebuggerPerspective, ide_debugger_perspective, IDE, DEBUGGER_PERSPECTIVE, IdeLayout)
 
-IdeDebugger *ide_debug_manager_get_debugger (IdeDebugManager  *self);
-gboolean     ide_debug_manager_get_active   (IdeDebugManager  *self);
-gboolean     ide_debug_manager_start        (IdeDebugManager  *self,
-                                             IdeRunner        *runner,
-                                             GError          **error);
-void         ide_debug_manager_stop         (IdeDebugManager  *self);
+void ide_debugger_perspective_set_debugger           (IdeDebuggerPerspective *self,
+                                                      IdeDebugger            *debugger);
+void ide_debugger_perspective_navigate_to_breakpoint (IdeDebuggerPerspective *self,
+                                                      IdeDebuggerBreakpoint  *breakpoint);
 
 G_END_DECLS

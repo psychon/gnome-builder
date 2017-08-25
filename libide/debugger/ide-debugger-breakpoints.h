@@ -1,4 +1,4 @@
-/* ide-debug-manager.h
+/* ide-debugger-breakpoints.h
  *
  * Copyright (C) 2017 Christian Hergert <chergert@redhat.com>
  *
@@ -18,19 +18,20 @@
 
 #pragma once
 
-#include "ide-object.h"
+#include <glib-object.h>
+
+#include "ide-debugger-types.h"
 
 G_BEGIN_DECLS
 
-#define IDE_TYPE_DEBUG_MANAGER (ide_debug_manager_get_type())
+#define IDE_TYPE_DEBUGGER_BREAKPOINTS (ide_debugger_breakpoints_get_type())
 
-G_DECLARE_FINAL_TYPE (IdeDebugManager, ide_debug_manager, IDE, DEBUG_MANAGER, IdeObject)
+G_DECLARE_FINAL_TYPE (IdeDebuggerBreakpoints, ide_debugger_breakpoints, IDE, DEBUGGER_BREAKPOINTS, GObject)
 
-IdeDebugger *ide_debug_manager_get_debugger (IdeDebugManager  *self);
-gboolean     ide_debug_manager_get_active   (IdeDebugManager  *self);
-gboolean     ide_debug_manager_start        (IdeDebugManager  *self,
-                                             IdeRunner        *runner,
-                                             GError          **error);
-void         ide_debug_manager_stop         (IdeDebugManager  *self);
+IdeDebuggerBreakMode ide_debugger_breakpoints_get_line (IdeDebuggerBreakpoints *self,
+                                                        guint                   line);
+void                 ide_debugger_breakpoints_set_line (IdeDebuggerBreakpoints *self,
+                                                        guint                   line,
+                                                        IdeDebuggerBreakMode    mode);
 
 G_END_DECLS

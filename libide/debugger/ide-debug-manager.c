@@ -25,6 +25,7 @@
 
 #include "debugger/ide-debug-manager.h"
 #include "debugger/ide-debugger.h"
+#include "debugger/ide-debugger-private.h"
 #include "plugins/ide-extension-util.h"
 #include "runner/ide-runner.h"
 
@@ -32,6 +33,7 @@ struct _IdeDebugManager
 {
   IdeObject           parent_instance;
 
+  GHashTable         *breakpoints;
   IdeDebugger        *debugger;
   DzlBindingGroup    *debugger_bindings;
   DzlSignalGroup     *debugger_signals;
@@ -125,6 +127,63 @@ ide_debug_manager_debugger_stopped (IdeDebugManager       *self,
 }
 
 static void
+ide_debug_manager_breakpoint_added (IdeDebugManager       *self,
+                                    IdeDebuggerBreakpoint *breakpoint,
+                                    IdeDebugger           *debugger)
+{
+  IdeDebuggerBreakpoints *breakpoints;
+  IdeDebuggerBreakMode mode;
+  g_autoptr(GFile) file = NULL;
+  const gchar *path;
+  guint line;
+
+  g_assert (IDE_IS_DEBUG_MANAGER (self));
+  g_assert (IDE_IS_DEBUGGER_BREAKPOINT (breakpoint));
+  g_assert (IDE_IS_DEBUGGER (debugger));
+
+  path = ide_debugger_breakpoint_get_file (breakpoint);
+  file = g_file_new_for_path (path);
+
+  breakpoints = g_hash_table_lookup (self->breakpoints, file);
+
+  if (breakpoints == NULL)
+    {
+      breakpoints = g_object_new (IDE_TYPE_DEBUGGER_BREAKPOINTS,
+                                  "file", file,
+                                  NULL);
+      g_hash_table_insert (self->breakpoints, g_steal_pointer (&file), breakpoints);
+    }
+
+  mode = ide_debugger_breakpoint_get_mode (breakpoint);
+  line = ide_debugger_breakpoint_get_line (breakpoint);
+
+  ide_debugger_breakpoints_set_line (breakpoints, line, mode);
+}
+
+static void
+ide_debug_manager_breakpoint_removed (IdeDebugManager       *self,
+                                      IdeDebuggerBreakpoint *breakpoint,
+                                      IdeDebugger           *debugger)
+{
+  IdeDebuggerBreakpoints *breakpoints;
+  g_autoptr(GFile) file = NULL;
+  const gchar *path;
+  guint line;
+
+  g_assert (IDE_IS_DEBUG_MANAGER (self));
+  g_assert (IDE_IS_DEBUGGER_BREAKPOINT (breakpoint));
+  g_assert (IDE_IS_DEBUGGER (debugger));
+
+  line = ide_debugger_breakpoint_get_line (breakpoint);
+  path = ide_debugger_breakpoint_get_file (breakpoint);
+  file = g_file_new_for_path (path);
+
+  breakpoints = g_hash_table_lookup (self->breakpoints, file);
+  if (breakpoints != NULL)
+    ide_debugger_breakpoints_set_line (breakpoints, line, IDE_DEBUGGER_BREAK_NONE);
+}
+
+static void
 ide_debug_manager_finalize (GObject *object)
 {
   IdeDebugManager *self = (IdeDebugManager *)object;
@@ -133,6 +192,7 @@ ide_debug_manager_finalize (GObject *object)
   g_clear_object (&self->debugger_bindings);
   g_clear_object (&self->debugger_signals);
   g_clear_object (&self->runner);
+  g_clear_pointer (&self->breakpoints, g_hash_table_unref);
 
   G_OBJECT_CLASS (ide_debug_manager_parent_class)->finalize (object);
 }
@@ -217,13 +277,27 @@ ide_debug_manager_class_init (IdeDebugManagerClass *klass)
 static void
 ide_debug_manager_init (IdeDebugManager *self)
 {
+  self->breakpoints = g_hash_table_new_full ((GHashFunc)g_file_hash,
+                                             (GEqualFunc)g_file_equal,
+                                             g_object_unref,
+                                             g_object_unref);
+
   self->debugger_signals = dzl_signal_group_new (IDE_TYPE_DEBUGGER);
 
-  dzl_signal_group_connect_object (self->debugger_signals,
-                                   "stopped",
-                                   G_CALLBACK (ide_debug_manager_debugger_stopped),
-                                   self,
-                                   G_CONNECT_SWAPPED);
+  dzl_signal_group_connect_swapped (self->debugger_signals,
+                                    "stopped",
+                                    G_CALLBACK (ide_debug_manager_debugger_stopped),
+                                    self);
+
+  dzl_signal_group_connect_swapped (self->debugger_signals,
+                                    "breakpoint-added",
+                                    G_CALLBACK (ide_debug_manager_breakpoint_added),
+                                    self);
+
+  dzl_signal_group_connect_swapped (self->debugger_signals,
+                                    "breakpoint-removed",
+                                    G_CALLBACK (ide_debug_manager_breakpoint_removed),
+                                    self);
 }
 
 static void
@@ -386,4 +460,20 @@ ide_debug_manager_get_active (IdeDebugManager *self)
   g_return_val_if_fail (IDE_IS_DEBUG_MANAGER (self), FALSE);
 
   return self->active;
+}
+
+/**
+ * ide_debug_manager_get_debugger:
+ * @self: a #IdeDebugManager
+ *
+ * Gets the debugger instance, if it is loaded.
+ *
+ * Returns: (transfer none) (nullable): An #IdeDebugger or %NULL
+ */
+IdeDebugger *
+ide_debug_manager_get_debugger (IdeDebugManager *self)
+{
+  g_return_val_if_fail (IDE_IS_DEBUG_MANAGER (self), NULL);
+
+  return self->debugger;
 }

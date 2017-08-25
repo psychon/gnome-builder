@@ -1,4 +1,4 @@
-/* ide-debug-manager.h
+/* ide-debugger-view.h
  *
  * Copyright (C) 2017 Christian Hergert <chergert@redhat.com>
  *
@@ -18,19 +18,19 @@
 
 #pragma once
 
-#include "ide-object.h"
+#include <gtksourceview/gtksource.h>
+
+#include "layout/ide-layout-view.h"
 
 G_BEGIN_DECLS
 
-#define IDE_TYPE_DEBUG_MANAGER (ide_debug_manager_get_type())
+#define IDE_TYPE_DEBUGGER_VIEW (ide_debugger_view_get_type())
 
-G_DECLARE_FINAL_TYPE (IdeDebugManager, ide_debug_manager, IDE, DEBUG_MANAGER, IdeObject)
+G_DECLARE_FINAL_TYPE (IdeDebuggerView, ide_debugger_view, IDE, DEBUGGER_VIEW, IdeLayoutView)
 
-IdeDebugger *ide_debug_manager_get_debugger (IdeDebugManager  *self);
-gboolean     ide_debug_manager_get_active   (IdeDebugManager  *self);
-gboolean     ide_debug_manager_start        (IdeDebugManager  *self,
-                                             IdeRunner        *runner,
-                                             GError          **error);
-void         ide_debug_manager_stop         (IdeDebugManager  *self);
+GtkWidget       *ide_debugger_view_new        (void);
+GtkSourceBuffer *ide_debugger_view_get_buffer (IdeDebuggerView *self);
+void             ide_debugger_view_set_buffer (IdeDebuggerView *self,
+                                               GtkSourceBuffer *buffer);
 
 G_END_DECLS

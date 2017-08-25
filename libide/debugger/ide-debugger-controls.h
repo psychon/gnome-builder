@@ -1,4 +1,4 @@
-/* ide-debug-manager.h
+/* ide-debugger-controls.h
  *
  * Copyright (C) 2017 Christian Hergert <chergert@redhat.com>
  *
@@ -16,21 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#pragma once
+#ifndef IDE_DEBUGGER_CONTROLS_H
+#define IDE_DEBUGGER_CONTROLS_H
 
-#include "ide-object.h"
+#include <gtk/gtk.h>
+
+#include "ide-types.h"
+
+#include "debugger/ide-debugger.h"
 
 G_BEGIN_DECLS
 
-#define IDE_TYPE_DEBUG_MANAGER (ide_debug_manager_get_type())
+#define IDE_TYPE_DEBUGGER_CONTROLS (ide_debugger_controls_get_type())
 
-G_DECLARE_FINAL_TYPE (IdeDebugManager, ide_debug_manager, IDE, DEBUG_MANAGER, IdeObject)
+G_DECLARE_FINAL_TYPE (IdeDebuggerControls, ide_debugger_controls, IDE, DEBUGGER_CONTROLS, GtkRevealer)
 
-IdeDebugger *ide_debug_manager_get_debugger (IdeDebugManager  *self);
-gboolean     ide_debug_manager_get_active   (IdeDebugManager  *self);
-gboolean     ide_debug_manager_start        (IdeDebugManager  *self,
-                                             IdeRunner        *runner,
-                                             GError          **error);
-void         ide_debug_manager_stop         (IdeDebugManager  *self);
+IdeDebugger *ide_debugger_controls_get_debugger (IdeDebuggerControls *self);
+void         ide_debugger_controls_set_debugger (IdeDebuggerControls *self,
+                                                 IdeDebugger         *debugger);
 
 G_END_DECLS
+
+#endif /* IDE_DEBUGGER_CONTROLS_H */

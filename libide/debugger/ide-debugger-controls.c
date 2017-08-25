@@ -1,4 +1,4 @@
-/* ide-debug-manager.h
+/* ide-debugger-controls.c
  *
  * Copyright (C) 2017 Christian Hergert <chergert@redhat.com>
  *
@@ -16,21 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#pragma once
+#include "ide-debugger-controls.h"
 
-#include "ide-object.h"
+struct _IdeDebuggerControls
+{
+  GtkBin parent_instance;
+};
 
-G_BEGIN_DECLS
+G_DEFINE_TYPE (IdeDebuggerControls, ide_debugger_controls, GTK_TYPE_REVEALER)
 
-#define IDE_TYPE_DEBUG_MANAGER (ide_debug_manager_get_type())
+static void
+ide_debugger_controls_class_init (IdeDebuggerControlsClass *klass)
+{
+  GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-G_DECLARE_FINAL_TYPE (IdeDebugManager, ide_debug_manager, IDE, DEBUG_MANAGER, IdeObject)
+  gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/builder/ui/ide-debugger-controls.ui");
+}
 
-IdeDebugger *ide_debug_manager_get_debugger (IdeDebugManager  *self);
-gboolean     ide_debug_manager_get_active   (IdeDebugManager  *self);
-gboolean     ide_debug_manager_start        (IdeDebugManager  *self,
-                                             IdeRunner        *runner,
-                                             GError          **error);
-void         ide_debug_manager_stop         (IdeDebugManager  *self);
-
-G_END_DECLS
+static void
+ide_debugger_controls_init (IdeDebuggerControls *self)
+{
+  gtk_widget_init_template (GTK_WIDGET (self));
+}

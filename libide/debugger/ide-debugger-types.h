@@ -104,6 +104,7 @@ typedef enum
 
 /**
  * IdeDebuggerBreakMode:
+ * @IDE_DEBUGGER_BREAK_NONE: No breakpoint is set
  * @IDE_DEBUGGER_BREAK_BREAKPOINT: A simple breakpoint that stops the debugger
  *   when reaching a given location.
  * @IDE_DEBUGGER_BREAK_COUNTPOINT: A counter that is incremented when the
@@ -115,6 +116,7 @@ typedef enum
  */
 typedef enum
 {
+  IDE_DEBUGGER_BREAK_NONE = 0,
   IDE_DEBUGGER_BREAK_BREAKPOINT,
   IDE_DEBUGGER_BREAK_COUNTPOINT,
   IDE_DEBUGGER_BREAK_WATCHPOINT,

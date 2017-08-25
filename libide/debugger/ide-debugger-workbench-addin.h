@@ -1,4 +1,4 @@
-/* ide-debug-manager.h
+/* ide-debugger-workbench-addin.h
  *
  * Copyright (C) 2017 Christian Hergert <chergert@redhat.com>
  *
@@ -18,19 +18,12 @@
 
 #pragma once
 
-#include "ide-object.h"
+#include <glib-object.h>
 
 G_BEGIN_DECLS
 
-#define IDE_TYPE_DEBUG_MANAGER (ide_debug_manager_get_type())
+#define IDE_TYPE_DEBUGGER_WORKBENCH_ADDIN (ide_debugger_workbench_addin_get_type())
 
-G_DECLARE_FINAL_TYPE (IdeDebugManager, ide_debug_manager, IDE, DEBUG_MANAGER, IdeObject)
-
-IdeDebugger *ide_debug_manager_get_debugger (IdeDebugManager  *self);
-gboolean     ide_debug_manager_get_active   (IdeDebugManager  *self);
-gboolean     ide_debug_manager_start        (IdeDebugManager  *self,
-                                             IdeRunner        *runner,
-                                             GError          **error);
-void         ide_debug_manager_stop         (IdeDebugManager  *self);
+G_DECLARE_FINAL_TYPE (IdeDebuggerWorkbenchAddin, ide_debugger_workbench_addin, IDE, DEBUGGER_WORKBENCH_ADDIN, GObject)
 
 G_END_DECLS
