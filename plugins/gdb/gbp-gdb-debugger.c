@@ -2475,12 +2475,21 @@ gbp_gdb_debugger_check_ready (GbpGdbDebugger  *self,
 {
   g_assert (GBP_IS_GDB_DEBUGGER (self));
 
-  if (self->io_stream == NULL || g_io_stream_is_closed (self->io_stream))
+  if (self->io_stream == NULL)
+    {
+      g_set_error (error,
+                   G_IO_ERROR,
+                   G_IO_ERROR_INVAL,
+                   "The connection to gdb has not been set");
+      return FALSE;
+    }
+
+  if (g_io_stream_is_closed (self->io_stream))
     {
       g_set_error (error,
                    G_IO_ERROR,
                    G_IO_ERROR_CLOSED,
-                   "The connection to gdb is closed or has not been set");
+                   "The connection is closed");
       return FALSE;
     }
 
