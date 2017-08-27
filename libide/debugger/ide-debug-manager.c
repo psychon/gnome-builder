@@ -364,14 +364,20 @@ static void
 ide_debug_manager_runner_exited (IdeDebugManager *self,
                                  IdeRunner       *runner)
 {
+  g_autoptr(IdeDebugger) debugger = NULL;
+  g_autoptr(IdeRunner) hold_runner = NULL;
+
   g_assert (IDE_IS_DEBUG_MANAGER (self));
   g_assert (IDE_IS_RUNNER (runner));
 
-  g_clear_object (&self->runner);
-  g_clear_object (&self->debugger);
+  /*
+   * Keep debugger alive so that listeners to :debugger property can
+   * properly disconnect signals when we clear the debugger instance.
+   */
+  debugger = g_steal_pointer (&self->debugger);
+  hold_runner = g_steal_pointer (&self->runner);
 
   ide_debug_manager_set_active (self, FALSE);
-
   g_object_notify_by_pspec (G_OBJECT (self), properties [PROP_DEBUGGER]);
 }
 
