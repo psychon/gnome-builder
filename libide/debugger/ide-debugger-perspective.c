@@ -224,11 +224,20 @@ ide_debugger_perspective_unbind (IdeDebuggerPerspective *self,
   g_assert (IDE_IS_DEBUGGER_PERSPECTIVE (self));
   g_assert (DZL_IS_SIGNAL_GROUP (debugger_signals));
 
-  ide_debugger_breakpoints_view_set_debugger (self->breakpoints_view, NULL);
-  ide_debugger_libraries_view_set_debugger (self->libraries_view, NULL);
-  ide_debugger_locals_view_set_debugger (self->locals_view, NULL);
-  ide_debugger_registers_view_set_debugger (self->registers_view, NULL);
-  ide_debugger_threads_view_set_debugger (self->threads_view, NULL);
+  if (self->breakpoints_view)
+    ide_debugger_breakpoints_view_set_debugger (self->breakpoints_view, NULL);
+
+  if (self->libraries_view)
+    ide_debugger_libraries_view_set_debugger (self->libraries_view, NULL);
+
+  if (self->locals_view)
+    ide_debugger_locals_view_set_debugger (self->locals_view, NULL);
+
+  if (self->registers_view)
+    ide_debugger_registers_view_set_debugger (self->registers_view, NULL);
+
+  if (self->threads_view)
+    ide_debugger_threads_view_set_debugger (self->threads_view, NULL);
 
   IDE_EXIT;
 }

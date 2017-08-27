@@ -2140,7 +2140,9 @@ gbp_gdb_debugger_disassemble_async (IdeDebugger                   *debugger,
   g_task_set_priority (task, G_PRIORITY_LOW);
   g_task_set_source_tag (task, gbp_gdb_debugger_disassemble_async);
 
-  command = g_strdup_printf ("-data-disassemble -s 0x%"G_GINT64_MODIFIER"x -e 0x%"G_GINT64_MODIFIER"x 0",
+  command = g_strdup_printf ("-data-disassemble "
+                             "-s 0x%"G_GINT64_MODIFIER"x "
+                             "-e 0x%"G_GINT64_MODIFIER"x 0",
                              range->from, range->to);
 
   gbp_gdb_debugger_exec_async (self,
