@@ -435,10 +435,6 @@ ide_debug_manager_start (IdeDebugManager  *self,
 
   /* TODO: Synchronize breakpoints */
 
-  ide_debugger_move_async (self->debugger,
-                           IDE_DEBUGGER_MOVEMENT_START,
-                           NULL, NULL, NULL);
-
   ret = TRUE;
 
 failure:

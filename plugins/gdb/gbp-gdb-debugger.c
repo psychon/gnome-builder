@@ -2249,6 +2249,10 @@ gbp_gdb_debugger_on_runner_spawned (GbpGdbDebugger *self,
   tty_command = g_strdup_printf ("-gdb-set inferior-tty /proc/self/fd/%d", self->mapped_fd);
   gbp_gdb_debugger_exec_async (self, NULL, tty_command, NULL, NULL, NULL);
 
+  ide_debugger_move_async (IDE_DEBUGGER (self),
+                           IDE_DEBUGGER_MOVEMENT_START,
+                           NULL, NULL, NULL);
+
   IDE_EXIT;
 }
 
