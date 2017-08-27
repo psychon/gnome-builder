@@ -2628,21 +2628,6 @@ gbp_gdb_debugger_exec_async (GbpGdbDebugger      *self,
   g_return_if_fail (!thread || IDE_IS_DEBUGGER_THREAD (thread));
   g_return_if_fail (!cancellable || G_IS_CANCELLABLE (cancellable));
 
-#if 0
-  {
-    guint i = 0;
-
-    g_print ("Submitting command with depth of %d\n",
-             g_queue_get_length (&self->cmdqueue));
-
-    for (const GList *iter = self->cmdqueue.head; iter; iter = iter->next, i++)
-      {
-        GBytes *b = g_object_get_data (iter->data, "REQUEST_BYTES");
-        g_print ("Queued[%u]: %s", i, (gchar *)g_bytes_get_data (b, NULL));
-      }
-  }
-#endif
-
   /* Wrap at 10,000, but steal 9999 to use for thread switching */
   id = ++self->cmdseq;
   if (id == 9999)
@@ -2710,6 +2695,10 @@ gbp_gdb_debugger_exec_async (GbpGdbDebugger      *self,
       g_string_append_printf (str, "%s\n", command);
       g_task_return_pointer (task, NULL, NULL);
     }
+
+#if 0
+  g_print (">>> %s", str->str);
+#endif
 
   bytes = g_string_free_to_bytes (str);
   g_object_set_data_full (G_OBJECT (task), "REQUEST_BYTES",
