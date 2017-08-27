@@ -37,7 +37,7 @@ struct _GbpGdbDebugger
 
   DzlSignalGroup           *runner_signals;
 
-  /* This is the number for the fd in the inferrior process.
+  /* This is the number for the fd in the inferior process.
    * It is not opened/owned by this instance (as it is in a
    * different process space). No need to close.
    */
@@ -2192,7 +2192,7 @@ static void
 gbp_gdb_debugger_prepare (IdeDebugger *debugger,
                           IdeRunner   *runner)
 {
-  static gchar *prepend_argv[] = { "gdb", "--interpreter", "mi2", "--args" };
+  static gchar *prepend_argv[] = { "gdb", "--interpreter=mi2", "--args" };
   GbpGdbDebugger *self = (GbpGdbDebugger *)debugger;
   int tty_fd;
 
@@ -2211,7 +2211,7 @@ gbp_gdb_debugger_prepare (IdeDebugger *debugger,
   /*
    * We steal and remap the PTY fd into the process so that gdb does not get
    * the controlling terminal, but instead allow us to ask gdb to setup the
-   * inferrior with that same PTY.
+   * inferior with that same PTY.
    */
   if (-1 != (tty_fd = ide_runner_steal_tty (runner)))
     self->mapped_fd = ide_runner_take_fd (runner, tty_fd, -1);
@@ -2317,6 +2317,7 @@ gbp_gdb_debugger_class_init (GbpGdbDebuggerClass *klass)
   object_class->finalize = gbp_gdb_debugger_finalize;
 
   debugger_class->supports_runner = gbp_gdb_debugger_supports_runner;
+  debugger_class->prepare = gbp_gdb_debugger_prepare;
   debugger_class->disassemble_async = gbp_gdb_debugger_disassemble_async;
   debugger_class->disassemble_finish = gbp_gdb_debugger_disassemble_finish;
   debugger_class->insert_breakpoint_async = gbp_gdb_debugger_insert_breakpoint_async;
