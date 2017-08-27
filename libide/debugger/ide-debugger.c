@@ -1708,7 +1708,7 @@ ide_debugger_send_signal_finish (IdeDebugger   *self,
  * This works by keeping track of libraries as they are loaded and unloaded and
  * their associated file mappings.
  *
- * Currently, the filename will match the name in the inferrior mount namespace,
+ * Currently, the filename will match the name in the inferior mount namespace,
  * but that may change based on future design changes.
  *
  * Returns: the filename of the binary or %NULL

@@ -82,7 +82,7 @@ ide_debugger_address_map_entry_free (gpointer data)
  *
  * Creates a new #IdeDebuggerAddressMap.
  *
- * The map is used to track the locations of mapped files in the inferriors
+ * The map is used to track the locations of mapped files in the inferiors
  * address space. This allows relatively quick lookup to determine what file
  * contains a given execution address (instruction pointer, etc).
  *

@@ -65,7 +65,7 @@ _ide_debugger_real_interrupt_async (IdeDebugger            *self,
                            _ide_debugger_real_interrupt_async,
                            G_IO_ERROR,
                            G_IO_ERROR_NOT_SUPPORTED,
-                           "Interrupting inferrior is not supported");
+                           "Interrupting inferior is not supported");
 }
 
 gboolean
@@ -93,7 +93,7 @@ _ide_debugger_real_send_signal_async (IdeDebugger         *self,
                            _ide_debugger_real_send_signal_async,
                            G_IO_ERROR,
                            G_IO_ERROR_NOT_SUPPORTED,
-                           "Sending signals to inferrior is not supported");
+                           "Sending signals to inferior is not supported");
 }
 
 gboolean
