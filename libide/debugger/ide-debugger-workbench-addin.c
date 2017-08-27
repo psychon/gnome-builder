@@ -132,6 +132,31 @@ controls_notify_child_revealed (IdeDebuggerWorkbenchAddin *self,
 }
 
 static void
+ide_debugger_workbench_addin_notify_debugger (IdeDebuggerWorkbenchAddin *self,
+                                              GParamSpec                *pspec,
+                                              IdeDebugManager           *debug_manager)
+{
+  IdeDebugger *debugger;
+
+  IDE_ENTRY;
+
+  g_assert (IDE_IS_DEBUGGER_WORKBENCH_ADDIN (self));
+  g_assert (IDE_IS_DEBUG_MANAGER (debug_manager));
+
+  debugger = ide_debug_manager_get_debugger (debug_manager);
+
+  if (self->perspective != NULL)
+    ide_debugger_perspective_set_debugger (self->perspective, debugger);
+
+  if (self->workbench != NULL)
+    gtk_widget_insert_action_group (GTK_WIDGET (self->workbench),
+                                    "debugger",
+                                    G_ACTION_GROUP (debugger));
+
+  IDE_EXIT;
+}
+
+static void
 ide_debugger_workbench_addin_load (IdeWorkbenchAddin *addin,
                                    IdeWorkbench      *workbench)
 {
@@ -164,6 +189,11 @@ ide_debugger_workbench_addin_load (IdeWorkbenchAddin *addin,
                                     G_CALLBACK (debug_manager_notify_debugger),
                                     self);
 
+  dzl_signal_group_connect_swapped (self->debug_manager_signals,
+                                    "notify::debugger",
+                                    G_CALLBACK (ide_debugger_workbench_addin_notify_debugger),
+                                    self);
+
   dzl_signal_group_set_target (self->debug_manager_signals, debug_manager);
 
   self->controls = g_object_new (IDE_TYPE_DEBUGGER_CONTROLS,
@@ -194,9 +224,6 @@ ide_debugger_workbench_addin_load (IdeWorkbenchAddin *addin,
   self->perspective = g_object_new (IDE_TYPE_DEBUGGER_PERSPECTIVE,
                                     "visible", TRUE,
                                     NULL);
-  g_object_bind_property (debug_manager, "debugger",
-                          self->perspective, "debugger",
-                          G_BINDING_SYNC_CREATE);
   ide_workbench_add_perspective (workbench, IDE_PERSPECTIVE (self->perspective));
 
   self->message = g_object_new (IDE_TYPE_WORKBENCH_MESSAGE,
