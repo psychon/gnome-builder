@@ -243,6 +243,24 @@ ide_debugger_perspective_unbind (IdeDebuggerPerspective *self,
 }
 
 static void
+ide_debugger_perspective_frame_activated (IdeDebuggerPerspective *self,
+                                          IdeDebuggerThread      *thread,
+                                          IdeDebuggerFrame       *frame,
+                                          IdeDebuggerThreadsView *threads_view)
+{
+  IDE_ENTRY;
+
+  g_assert (IDE_IS_DEBUGGER_PERSPECTIVE (self));
+  g_assert (IDE_IS_DEBUGGER_THREAD (thread));
+  g_assert (IDE_IS_DEBUGGER_FRAME (frame));
+  g_assert (IDE_IS_DEBUGGER_THREADS_VIEW (threads_view));
+
+  ide_debugger_locals_view_load_async (self->locals_view, thread, frame, NULL, NULL, NULL);
+
+  IDE_EXIT;
+}
+
+static void
 ide_debugger_perspective_finalize (GObject *object)
 {
   IdeDebuggerPerspective *self = (IdeDebuggerPerspective *)object;
@@ -359,6 +377,11 @@ ide_debugger_perspective_init (IdeDebuggerPerspective *self)
                                    G_CALLBACK (on_debugger_stopped),
                                    self,
                                    G_CONNECT_SWAPPED);
+
+  g_signal_connect_swapped (self->threads_view,
+                            "frame-activated",
+                            G_CALLBACK (ide_debugger_perspective_frame_activated),
+                            self);
 
   self->log_css = gtk_css_provider_new ();
   context = gtk_widget_get_style_context (GTK_WIDGET (self->log_text_view));
