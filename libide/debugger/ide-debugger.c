@@ -1992,5 +1992,6 @@ ide_debugger_prepare (IdeDebugger *self,
   g_return_if_fail (IDE_IS_DEBUGGER (self));
   g_return_if_fail (IDE_IS_RUNNER (runner));
 
-  IDE_DEBUGGER_GET_CLASS (self)->prepare (self, runner);
+  if (IDE_DEBUGGER_GET_CLASS (self)->prepare)
+    IDE_DEBUGGER_GET_CLASS (self)->prepare (self, runner);
 }
