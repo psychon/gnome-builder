@@ -27,6 +27,7 @@
 #include "debugger/ide-debugger.h"
 #include "debugger/ide-debugger-breakpoints-view.h"
 #include "debugger/ide-debugger-locals-view.h"
+#include "debugger/ide-debugger-libraries-view.h"
 #include "debugger/ide-debugger-perspective.h"
 #include "debugger/ide-debugger-registers-view.h"
 #include "debugger/ide-debugger-threads-view.h"
@@ -45,9 +46,14 @@ struct _IdeDebuggerPerspective
   GtkCssProvider *log_css;
 
   /* Template references */
-  GtkTextBuffer  *log_buffer;
-  GtkTextView    *log_text_view;
-  IdeLayoutGrid  *layout_grid;
+  GtkTextBuffer              *log_buffer;
+  GtkTextView                *log_text_view;
+  IdeLayoutGrid              *layout_grid;
+  IdeDebuggerBreakpointsView *breakpoints_view;
+  IdeDebuggerLibrariesView   *libraries_view;
+  IdeDebuggerLocalsView      *locals_view;
+  IdeDebuggerRegistersView   *registers_view;
+  IdeDebuggerThreadsView     *threads_view;
 };
 
 enum {
@@ -190,6 +196,44 @@ on_debugger_stopped (IdeDebuggerPerspective *self,
 }
 
 static void
+ide_debugger_perspective_bind (IdeDebuggerPerspective *self,
+                               IdeDebugger            *debugger,
+                               DzlSignalGroup         *debugger_signals)
+{
+  IDE_ENTRY;
+
+  g_assert (IDE_IS_DEBUGGER_PERSPECTIVE (self));
+  g_assert (IDE_IS_DEBUGGER (debugger));
+  g_assert (DZL_IS_SIGNAL_GROUP (debugger_signals));
+
+  ide_debugger_breakpoints_view_set_debugger (self->breakpoints_view, debugger);
+  ide_debugger_libraries_view_set_debugger (self->libraries_view, debugger);
+  ide_debugger_locals_view_set_debugger (self->locals_view, debugger);
+  ide_debugger_registers_view_set_debugger (self->registers_view, debugger);
+  ide_debugger_threads_view_set_debugger (self->threads_view, debugger);
+
+  IDE_EXIT;
+}
+
+static void
+ide_debugger_perspective_unbind (IdeDebuggerPerspective *self,
+                                 DzlSignalGroup         *debugger_signals)
+{
+  IDE_ENTRY;
+
+  g_assert (IDE_IS_DEBUGGER_PERSPECTIVE (self));
+  g_assert (DZL_IS_SIGNAL_GROUP (debugger_signals));
+
+  ide_debugger_breakpoints_view_set_debugger (self->breakpoints_view, NULL);
+  ide_debugger_libraries_view_set_debugger (self->libraries_view, NULL);
+  ide_debugger_locals_view_set_debugger (self->locals_view, NULL);
+  ide_debugger_registers_view_set_debugger (self->registers_view, NULL);
+  ide_debugger_threads_view_set_debugger (self->threads_view, NULL);
+
+  IDE_EXIT;
+}
+
+static void
 ide_debugger_perspective_finalize (GObject *object)
 {
   IdeDebuggerPerspective *self = (IdeDebuggerPerspective *)object;
@@ -263,9 +307,15 @@ ide_debugger_perspective_class_init (IdeDebuggerPerspectiveClass *klass)
   gtk_widget_class_bind_template_child (widget_class, IdeDebuggerPerspective, layout_grid);
   gtk_widget_class_bind_template_child (widget_class, IdeDebuggerPerspective, log_text_view);
   gtk_widget_class_bind_template_child (widget_class, IdeDebuggerPerspective, log_buffer);
+  gtk_widget_class_bind_template_child (widget_class, IdeDebuggerPerspective, breakpoints_view);
+  gtk_widget_class_bind_template_child (widget_class, IdeDebuggerPerspective, libraries_view);
+  gtk_widget_class_bind_template_child (widget_class, IdeDebuggerPerspective, locals_view);
+  gtk_widget_class_bind_template_child (widget_class, IdeDebuggerPerspective, registers_view);
+  gtk_widget_class_bind_template_child (widget_class, IdeDebuggerPerspective, threads_view);
 
   g_type_ensure (IDE_TYPE_DEBUGGER_BREAKPOINTS_VIEW);
   g_type_ensure (IDE_TYPE_DEBUGGER_LOCALS_VIEW);
+  g_type_ensure (IDE_TYPE_DEBUGGER_LIBRARIES_VIEW);
   g_type_ensure (IDE_TYPE_DEBUGGER_REGISTERS_VIEW);
   g_type_ensure (IDE_TYPE_DEBUGGER_THREADS_VIEW);
 }
@@ -278,6 +328,16 @@ ide_debugger_perspective_init (IdeDebuggerPerspective *self)
   gtk_widget_init_template (GTK_WIDGET (self));
 
   self->debugger_signals = dzl_signal_group_new (IDE_TYPE_DEBUGGER);
+
+  g_signal_connect_swapped (self->debugger_signals,
+                            "bind",
+                            G_CALLBACK (ide_debugger_perspective_bind),
+                            self);
+
+  g_signal_connect_swapped (self->debugger_signals,
+                            "unbind",
+                            G_CALLBACK (ide_debugger_perspective_unbind),
+                            self);
 
   dzl_signal_group_connect_object (self->debugger_signals,
                                    "log",
