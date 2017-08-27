@@ -2439,7 +2439,6 @@ gbp_gdb_debugger_connect (GbpGdbDebugger *self,
                           GIOStream      *io_stream,
                           GCancellable   *cancellable)
 {
-  struct gdbwire_mi_output *output;
   g_autoptr(GError) error = NULL;
   GInputStream *stream;
 
@@ -2466,20 +2465,8 @@ gbp_gdb_debugger_connect (GbpGdbDebugger *self,
                              gbp_gdb_debugger_read_cb,
                              g_object_ref (self));
 
-  /* Setup Async Execution in GDB */
-
-  output = gbp_gdb_debugger_exec (self,
-                                  NULL,
-                                  "-gdb-set mi-async on",
-                                  cancellable,
-                                  &error);
-
-  if (output == NULL || gbp_gdb_debugger_unwrap (output, &error))
-    g_warning ("%s", error->message);
-  else
-    gbp_gdb_debugger_reload_breakpoints (self);
-
-  g_clear_pointer (&output, gdbwire_mi_output_free);
+  gbp_gdb_debugger_exec_async (self, NULL, "-gdb-set mi-async on", NULL, NULL, NULL);
+  gbp_gdb_debugger_reload_breakpoints (self);
 }
 
 static gboolean
