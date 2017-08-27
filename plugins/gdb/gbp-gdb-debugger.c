@@ -48,6 +48,8 @@ struct _GbpGdbDebugger
   GQueue                    writequeue;
   GQueue                    cmdqueue;
   guint                     cmdseq;
+
+  guint                     has_connected : 1;
 };
 
 typedef struct
@@ -2442,8 +2444,12 @@ gbp_gdb_debugger_connect (GbpGdbDebugger *self,
   GInputStream *stream;
 
   g_return_if_fail (GBP_IS_GDB_DEBUGGER (self));
+  g_return_if_fail (self->has_connected == FALSE);
   g_return_if_fail (G_IS_IO_STREAM (io_stream));
   g_return_if_fail (!cancellable || G_IS_CANCELLABLE (cancellable));
+  g_return_if_fail (self->io_stream == NULL);
+
+  self->has_connected = TRUE;
 
   g_set_object (&self->io_stream, io_stream);
 
