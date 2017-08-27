@@ -433,6 +433,12 @@ ide_debug_manager_start (IdeDebugManager  *self,
 
   g_object_notify_by_pspec (G_OBJECT (self), properties [PROP_DEBUGGER]);
 
+  /* TODO: Synchronize breakpoints */
+
+  ide_debugger_move_async (self->debugger,
+                           IDE_DEBUGGER_MOVEMENT_START,
+                           NULL, NULL, NULL);
+
   ret = TRUE;
 
 failure:
