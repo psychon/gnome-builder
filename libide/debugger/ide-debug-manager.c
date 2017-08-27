@@ -140,7 +140,11 @@ ide_debug_manager_breakpoint_added (IdeDebugManager       *self,
   g_assert (IDE_IS_DEBUGGER_BREAKPOINT (breakpoint));
   g_assert (IDE_IS_DEBUGGER (debugger));
 
+  /* If there is no file, then there is nothing to cache */
   path = ide_debugger_breakpoint_get_file (breakpoint);
+  if (path == NULL)
+    return;
+
   file = g_file_new_for_path (path);
 
   breakpoints = g_hash_table_lookup (self->breakpoints, file);
@@ -173,8 +177,11 @@ ide_debug_manager_breakpoint_removed (IdeDebugManager       *self,
   g_assert (IDE_IS_DEBUGGER_BREAKPOINT (breakpoint));
   g_assert (IDE_IS_DEBUGGER (debugger));
 
-  line = ide_debugger_breakpoint_get_line (breakpoint);
   path = ide_debugger_breakpoint_get_file (breakpoint);
+  if (path == NULL)
+    return;
+
+  line = ide_debugger_breakpoint_get_line (breakpoint);
   file = g_file_new_for_path (path);
 
   breakpoints = g_hash_table_lookup (self->breakpoints, file);

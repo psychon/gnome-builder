@@ -425,6 +425,14 @@ ide_debugger_perspective_navigate_to_breakpoint (IdeDebuggerPerspective *self,
    */
 
   lookup.file = ide_debugger_breakpoint_get_file (breakpoint);
+
+  /* Some breakpoints require disassembly */
+  if (lookup.file == NULL)
+    {
+      /* TODO: disassemble frame and load source */
+      IDE_EXIT;
+    }
+
   g_return_if_fail (lookup.file != NULL);
 
   ide_layout_grid_foreach_view (self->layout_grid,
