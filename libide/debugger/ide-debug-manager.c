@@ -35,7 +35,6 @@ struct _IdeDebugManager
 
   GHashTable         *breakpoints;
   IdeDebugger        *debugger;
-  DzlBindingGroup    *debugger_bindings;
   DzlSignalGroup     *debugger_signals;
   IdeRunner          *runner;
 
@@ -189,7 +188,6 @@ ide_debug_manager_finalize (GObject *object)
   IdeDebugManager *self = (IdeDebugManager *)object;
 
   g_clear_object (&self->debugger);
-  g_clear_object (&self->debugger_bindings);
   g_clear_object (&self->debugger_signals);
   g_clear_object (&self->runner);
   g_clear_pointer (&self->breakpoints, g_hash_table_unref);
@@ -423,7 +421,6 @@ ide_debug_manager_start (IdeDebugManager  *self,
   self->runner = g_object_ref (runner);
   self->debugger = g_steal_pointer (&debugger);
 
-  dzl_binding_group_set_source (self->debugger_bindings, self->debugger);
   dzl_signal_group_set_target (self->debugger_signals, self->debugger);
 
   ide_debug_manager_set_active (self, TRUE);
@@ -441,7 +438,6 @@ ide_debug_manager_stop (IdeDebugManager *self)
 {
   g_return_if_fail (IDE_IS_DEBUG_MANAGER (self));
 
-  dzl_binding_group_set_source (self->debugger_bindings, NULL);
   dzl_signal_group_set_target (self->debugger_signals, NULL);
 
   if (self->runner != NULL)
