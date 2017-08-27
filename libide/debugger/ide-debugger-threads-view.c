@@ -814,7 +814,7 @@ ide_debugger_threads_view_set_debugger (IdeDebuggerThreadsView *self,
                                         IdeDebugger            *debugger)
 {
   g_return_if_fail (IDE_IS_DEBUGGER_THREADS_VIEW (self));
-  g_return_if_fail (IDE_IS_DEBUGGER (debugger));
+  g_return_if_fail (!debugger || IDE_IS_DEBUGGER (debugger));
 
   dzl_signal_group_set_target (self->debugger_signals, debugger);
 }

@@ -544,6 +544,7 @@ ide_debugger_breakpoints_view_set_debugger (IdeDebuggerBreakpointsView *self,
                                             IdeDebugger                *debugger)
 {
   g_return_if_fail (IDE_IS_DEBUGGER_BREAKPOINTS_VIEW (self));
+  g_return_if_fail (!debugger || IDE_IS_DEBUGGER (debugger));
 
   if (self->debugger_signals != NULL)
     {
