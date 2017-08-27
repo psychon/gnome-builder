@@ -355,6 +355,8 @@ ide_debugger_threads_view_unbind (IdeDebuggerThreadsView *self,
   g_assert (DZL_IS_SIGNAL_GROUP (debugger_signals));
 
   gtk_list_store_clear (self->thread_groups_store);
+  gtk_list_store_clear (self->threads_store);
+  gtk_list_store_clear (self->frames_store);
 }
 
 static void
