@@ -3611,7 +3611,7 @@ msgstr "Flatpak"
 
 #: plugins/flatpak/gtk/menus.ui:8
 msgid "_Download Dependencies"
-msgstr "_Download-Abhängigkeiten"
+msgstr "Abhängigkeiten herunterla_den"
 
 #: plugins/fpaste/fpaste_plugin/gtk/menus.ui:9
 msgid "Send to Fpaste.org"
